@@ -7,7 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "prod": "NODE_ENV=production node index.js"
+    "prod": "NODE_ENV=production node index.js",
+    "migrate": "npx sequelize-cli db:migrate",
+    "build": "npm run migrate && echo 'Build completed'"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
