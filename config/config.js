@@ -18,9 +18,12 @@ module.exports = {
     port: parseInt(process.env.DB_PORT) || 3306,
     dialect: "mysql",
     logging: false
-  },
-  production: {
-    use_env_variable: 'DATABASE_URL',
+  },  production: {
+    username: process.env.MYSQLUSER || process.env.DB_USER || "root",
+    password: process.env.MYSQLPASSWORD || process.env.DB_PASSWORD || "",
+    database: process.env.MYSQLDATABASE || process.env.DB_NAME || "railway",
+    host: process.env.MYSQLHOST || process.env.DB_HOST || "localhost",
+    port: parseInt(process.env.MYSQLPORT || process.env.DB_PORT) || 3306,
     dialect: "mysql",
     logging: false,
     dialectOptions: {

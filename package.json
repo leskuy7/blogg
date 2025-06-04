@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
     "start:deploy": "node deploy-startup.js",
+    "debug:env": "node debug-railway-env.js",
     "dev": "nodemon index.js",
     "prod": "NODE_ENV=production node index.js",
     "migrate": "npx sequelize-cli db:migrate",

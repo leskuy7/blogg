@@ -1759,3 +1759,10 @@
 {"level":"info","message":"Session store başarıyla senkronize edildi.","service":"blogapp","timestamp":"2025-06-04 15:57:18"}
 {"level":"info","message":"Server is running on port 3000","service":"blogapp","timestamp":"2025-06-04 15:57:18"}
 {"level":"info","message":"Environment: development","service":"blogapp","timestamp":"2025-06-04 15:57:18"}
+{"level":"info","message":"Database connection attempt 1/3","service":"blogapp","timestamp":"2025-06-04 16:00:07"}
+{"category":"database","database":"blogdb","dialect":"mysql","environment":"development","host":"localhost","level":"info","message":"Database connection established successfully","service":"blogapp","timestamp":"2025-06-04 16:00:07"}
+{"level":"info","message":"Veritabanı bağlantısı başarılı.","service":"blogapp","timestamp":"2025-06-04 16:00:07"}
+{"level":"info","message":"Veritabanı tabloları başarıyla senkronize edildi.","service":"blogapp","timestamp":"2025-06-04 16:00:07"}
+{"level":"info","message":"Session store başarıyla senkronize edildi.","service":"blogapp","timestamp":"2025-06-04 16:00:07"}
+{"level":"info","message":"Server is running on port 3000","service":"blogapp","timestamp":"2025-06-04 16:00:07"}
+{"level":"info","message":"Environment: development","service":"blogapp","timestamp":"2025-06-04 16:00:07"}
