@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "start:deploy": "node deploy-startup.js",
+    "test:railway": "node test-railway-connection.js",
     "debug:env": "node debug-railway-env.js",
     "check:mysql": "node check-railway-mysql.js",
     "dev": "nodemon index.js",
