@@ -10,15 +10,6 @@ const csrfMiddleware = require('./middlewares/csrf'); // CSRF middleware'ini iç
 const config = require('./config'); // config dosyasını içe aktar
 const { logger, logAccess } = require('./helpers/logger'); // Logger'ı içe aktar
 
-// Environment variables debug
-console.log('=== ENVIRONMENT DEBUG ===');
-console.log('NODE_ENV:', process.env.NODE_ENV);
-console.log('DB_HOST:', process.env.DB_HOST);
-console.log('DB_USER:', process.env.DB_USER);
-console.log('DB_NAME:', process.env.DB_NAME);
-console.log('DB_PORT:', process.env.DB_PORT);
-console.log('=========================');
-
 // Route dosyaları
 const userRoutes = require('./routes/user');
 const adminRoutes = require('./routes/admin');
@@ -97,10 +88,15 @@ app.use(errorHandler);
 // Veritabanı senkronizasyonu
 const syncDatabase = async () => {
     try {
+        // Test database connection first
+        await sequelize.authenticate();
+        logger.info("Veritabanı bağlantısı başarılı.");
+        
         // force: false kullanarak mevcut tabloları koru, sadece eksikleri tamamla
         await sequelize.sync({ force: false }); 
         logger.info("Veritabanı tabloları başarıyla senkronize edildi.");
-          // Session store'u sync et - artık timestamp kolonları mevcut
+        
+        // Session store'u sync et - artık timestamp kolonları mevcut
         await sessionStore.sync();
         logger.info("Session store başarıyla senkronize edildi.");
         
@@ -109,26 +105,33 @@ const syncDatabase = async () => {
         // await seedDatabase();
     } catch (err) {
         logger.error("Veritabanı senkronizasyon hatası:", { error: err.message, stack: err.stack });
+        throw err; // Re-throw to prevent server from starting with broken DB
     }
 };
 
 // Sunucuyu başlat
 (async () => {
-    await syncDatabase();
-    
-    const PORT = process.env.PORT || 3000;
-    const server = app.listen(PORT, () => {
-        logger.info(`Server is running on port ${PORT}`);
-    });
-    
-    server.on('error', (err) => {
-        if (err.code === 'EADDRINUSE') {
-            logger.error(`Port ${PORT} is already in use. Trying port ${PORT + 1}...`);
-            const alternativeServer = app.listen(PORT + 1, () => {
-                logger.info(`Server is running on port ${PORT + 1}`);
-            });
-        } else {
-            logger.error('Server error:', { error: err.message, stack: err.stack });
-        }
-    });
+    try {
+        await syncDatabase();
+        
+        const PORT = process.env.PORT || 3000;
+        const server = app.listen(PORT, () => {
+            logger.info(`Server is running on port ${PORT}`);
+            logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
+        });
+        
+        server.on('error', (err) => {
+            if (err.code === 'EADDRINUSE') {
+                logger.error(`Port ${PORT} is already in use. Trying port ${PORT + 1}...`);
+                const alternativeServer = app.listen(PORT + 1, () => {
+                    logger.info(`Server is running on port ${PORT + 1}`);
+                });
+            } else {
+                logger.error('Server error:', { error: err.message, stack: err.stack });
+            }
+        });
+    } catch (error) {
+        logger.error('Failed to start server:', { error: error.message, stack: error.stack });
+        process.exit(1);
+    }
 })();
