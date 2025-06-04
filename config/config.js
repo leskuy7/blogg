@@ -18,15 +18,14 @@ module.exports = {
     port: parseInt(process.env.DB_PORT) || 3306,
     dialect: "mysql",
     logging: false
-  },
-  production: {
+  },  production: {
     username: process.env.DB_USER || "root",
     password: process.env.DB_PASSWORD || "",
-    database: process.env.DB_NAME || "blogdb_production",
+    database: process.env.DB_NAME || "blogdb_production", 
     host: process.env.DB_HOST || "localhost",
     port: parseInt(process.env.DB_PORT) || 3306,
     dialect: "mysql",
-    logging: false,
+    logging: console.log,
     dialectOptions: {
       ssl: {
         require: true,

@@ -10,6 +10,15 @@ const csrfMiddleware = require('./middlewares/csrf'); // CSRF middleware'ini iç
 const config = require('./config'); // config dosyasını içe aktar
 const { logger, logAccess } = require('./helpers/logger'); // Logger'ı içe aktar
 
+// Environment variables debug
+console.log('=== ENVIRONMENT DEBUG ===');
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('DB_HOST:', process.env.DB_HOST);
+console.log('DB_USER:', process.env.DB_USER);
+console.log('DB_NAME:', process.env.DB_NAME);
+console.log('DB_PORT:', process.env.DB_PORT);
+console.log('=========================');
+
 // Route dosyaları
 const userRoutes = require('./routes/user');
 const adminRoutes = require('./routes/admin');

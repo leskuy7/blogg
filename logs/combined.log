@@ -1595,3 +1595,65 @@
 {"category":"access","ip":"::1","level":"error","message":"HTTP Error","method":"GET","responseTime":"7ms","service":"blogapp","statusCode":404,"timestamp":"2025-06-04 13:51:40","url":"/.well-known/appspecific/com.chrome.devtools.json","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"}
 {"category":"access","ip":"::1","level":"error","message":"HTTP Error","method":"GET","responseTime":"5ms","service":"blogapp","statusCode":404,"timestamp":"2025-06-04 13:51:40","url":"/resimler/default-blog.jpg","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"}
 {"category":"access","ip":"::1","level":"error","message":"HTTP Error","method":"GET","responseTime":"5ms","service":"blogapp","statusCode":404,"timestamp":"2025-06-04 13:51:40","url":"/resimler/default-blog.jpg","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"}
+{"category":"database","database":"blogdb","dialect":"mysql","environment":"development","host":"localhost","level":"info","message":"Database connection established successfully","service":"blogapp","timestamp":"2025-06-04 14:21:18"}
+{"level":"info","message":"Veritabanı tabloları başarıyla senkronize edildi.","service":"blogapp","timestamp":"2025-06-04 14:21:18"}
+{"level":"info","message":"Session store başarıyla senkronize edildi.","service":"blogapp","timestamp":"2025-06-04 14:21:18"}
+{"level":"info","message":"Server is running on port 3000","service":"blogapp","timestamp":"2025-06-04 14:21:18"}
+{"category":"database","database":"blogdb","dialect":"mysql","environment":"development","host":"localhost","level":"info","message":"Database connection established successfully","service":"blogapp","timestamp":"2025-06-04 14:25:36"}
+{"level":"info","message":"Veritabanı tabloları başarıyla senkronize edildi.","service":"blogapp","timestamp":"2025-06-04 14:25:36"}
+{"level":"info","message":"Session store başarıyla senkronize edildi.","service":"blogapp","timestamp":"2025-06-04 14:25:36"}
+{"level":"info","message":"Server is running on port 3000","service":"blogapp","timestamp":"2025-06-04 14:25:36"}
+{"category":"database","database":"blogdb","dialect":"mysql","environment":"development","host":"localhost","level":"info","message":"Database connection established successfully","service":"blogapp","timestamp":"2025-06-04 14:25:47"}
+{"level":"info","message":"Veritabanı tabloları başarıyla senkronize edildi.","service":"blogapp","timestamp":"2025-06-04 14:25:47"}
+{"level":"info","message":"Session store başarıyla senkronize edildi.","service":"blogapp","timestamp":"2025-06-04 14:25:47"}
+{"level":"info","message":"Server is running on port 3000","service":"blogapp","timestamp":"2025-06-04 14:25:47"}
+{"category":"database","database":"blogdb","dialect":"mysql","environment":"development","host":"localhost","level":"info","message":"Database connection established successfully","service":"blogapp","timestamp":"2025-06-04 14:25:49"}
+{"level":"info","message":"Veritabanı tabloları başarıyla senkronize edildi.","service":"blogapp","timestamp":"2025-06-04 14:25:49"}
+{"level":"info","message":"Session store başarıyla senkronize edildi.","service":"blogapp","timestamp":"2025-06-04 14:25:49"}
+{"level":"info","message":"Server is running on port 3000","service":"blogapp","timestamp":"2025-06-04 14:25:49"}
+{"category":"database","database":"blogdb","dialect":"mysql","environment":"development","host":"localhost","level":"info","message":"Database connection established successfully","service":"blogapp","timestamp":"2025-06-04 14:58:58"}
+{"level":"info","message":"Veritabanı tabloları başarıyla senkronize edildi.","service":"blogapp","timestamp":"2025-06-04 14:58:58"}
+{"level":"info","message":"Session store başarıyla senkronize edildi.","service":"blogapp","timestamp":"2025-06-04 14:58:58"}
+{"level":"info","message":"Server is running on port 3000","service":"blogapp","timestamp":"2025-06-04 14:58:58"}
+{"category":"database","database":"blogdb","dialect":"mysql","environment":"development","host":"localhost","level":"info","message":"Database connection established successfully","service":"blogapp","timestamp":"2025-06-04 14:59:07"}
+{"level":"info","message":"Veritabanı tabloları başarıyla senkronize edildi.","service":"blogapp","timestamp":"2025-06-04 14:59:07"}
+{"level":"info","message":"Session store başarıyla senkronize edildi.","service":"blogapp","timestamp":"2025-06-04 14:59:07"}
+{"level":"info","message":"Server is running on port 3000","service":"blogapp","timestamp":"2025-06-04 14:59:07"}
+{"category":"business","isAuthenticated":false,"level":"info","message":"Business Action: All blogs page accessed","page":1,"service":"blogapp","timestamp":"2025-06-04 15:02:51","userId":null}
+{"category":"access","ip":"::1","level":"info","message":"HTTP Request","method":"GET","responseTime":"49ms","service":"blogapp","statusCode":200,"timestamp":"2025-06-04 15:02:51","url":"/blogs","user":"Anonymous","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"}
+{"category":"access","ip":"::1","level":"error","message":"HTTP Error","method":"GET","responseTime":"15ms","service":"blogapp","statusCode":404,"timestamp":"2025-06-04 15:02:51","url":"/.well-known/appspecific/com.chrome.devtools.json","user":"Anonymous","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"}
+{"category":"business","isAuthenticated":false,"level":"info","message":"Business Action: All blogs page accessed","page":1,"service":"blogapp","timestamp":"2025-06-04 15:02:52","userId":null}
+{"category":"access","ip":"::1","level":"info","message":"HTTP Request","method":"GET","responseTime":"13ms","service":"blogapp","statusCode":304,"timestamp":"2025-06-04 15:02:52","url":"/blogs","user":"Anonymous","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"}
+{"category":"access","ip":"::1","level":"error","message":"HTTP Error","method":"GET","responseTime":"5ms","service":"blogapp","statusCode":404,"timestamp":"2025-06-04 15:02:52","url":"/.well-known/appspecific/com.chrome.devtools.json","user":"Anonymous","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"}
+{"category":"database","database":"blogdb","dialect":"mysql","environment":"development","host":"localhost","level":"info","message":"Database connection established successfully","service":"blogapp","timestamp":"2025-06-04 15:05:21"}
+{"level":"info","message":"Veritabanı tabloları başarıyla senkronize edildi.","service":"blogapp","timestamp":"2025-06-04 15:05:21"}
+{"level":"info","message":"Session store başarıyla senkronize edildi.","service":"blogapp","timestamp":"2025-06-04 15:05:21"}
+{"level":"info","message":"Server is running on port 3000","service":"blogapp","timestamp":"2025-06-04 15:05:21"}
+{"category":"database","database":"blogdb","dialect":"mysql","environment":"development","host":"localhost","level":"info","message":"Database connection established successfully","service":"blogapp","timestamp":"2025-06-04 15:05:48"}
+{"level":"info","message":"Veritabanı tabloları başarıyla senkronize edildi.","service":"blogapp","timestamp":"2025-06-04 15:05:48"}
+{"level":"info","message":"Session store başarıyla senkronize edildi.","service":"blogapp","timestamp":"2025-06-04 15:05:48"}
+{"level":"info","message":"Server is running on port 3000","service":"blogapp","timestamp":"2025-06-04 15:05:48"}
+{"category":"database","database":"blogdb","dialect":"mysql","environment":"development","host":"localhost","level":"info","message":"Database connection established successfully","service":"blogapp","timestamp":"2025-06-04 15:11:01"}
+{"level":"info","message":"Veritabanı tabloları başarıyla senkronize edildi.","service":"blogapp","timestamp":"2025-06-04 15:11:01"}
+{"level":"info","message":"Session store başarıyla senkronize edildi.","service":"blogapp","timestamp":"2025-06-04 15:11:01"}
+{"level":"info","message":"Server is running on port 3000","service":"blogapp","timestamp":"2025-06-04 15:11:01"}
+{"category":"database","database":"blogdb","dialect":"mysql","environment":"development","host":"localhost","level":"info","message":"Database connection established successfully","service":"blogapp","timestamp":"2025-06-04 15:15:55"}
+{"level":"info","message":"Veritabanı tabloları başarıyla senkronize edildi.","service":"blogapp","timestamp":"2025-06-04 15:15:55"}
+{"level":"info","message":"Session store başarıyla senkronize edildi.","service":"blogapp","timestamp":"2025-06-04 15:15:55"}
+{"level":"info","message":"Server is running on port 3000","service":"blogapp","timestamp":"2025-06-04 15:15:55"}
+{"category":"database","database":"blogdb","dialect":"mysql","environment":"development","host":"localhost","level":"info","message":"Database connection established successfully","service":"blogapp","timestamp":"2025-06-04 15:32:15"}
+{"level":"info","message":"Veritabanı tabloları başarıyla senkronize edildi.","service":"blogapp","timestamp":"2025-06-04 15:32:15"}
+{"level":"info","message":"Session store başarıyla senkronize edildi.","service":"blogapp","timestamp":"2025-06-04 15:32:15"}
+{"level":"info","message":"Server is running on port 3000","service":"blogapp","timestamp":"2025-06-04 15:32:15"}
+{"category":"database","database":"blogdb","dialect":"mysql","environment":"development","host":"localhost","level":"info","message":"Database connection established successfully","service":"blogapp","timestamp":"2025-06-04 15:32:36"}
+{"level":"info","message":"Veritabanı tabloları başarıyla senkronize edildi.","service":"blogapp","timestamp":"2025-06-04 15:32:36"}
+{"level":"info","message":"Session store başarıyla senkronize edildi.","service":"blogapp","timestamp":"2025-06-04 15:32:36"}
+{"level":"info","message":"Server is running on port 3000","service":"blogapp","timestamp":"2025-06-04 15:32:36"}
+{"category":"database","database":"blogdb","dialect":"mysql","environment":"development","host":"localhost","level":"info","message":"Database connection established successfully","service":"blogapp","timestamp":"2025-06-04 15:33:01"}
+{"level":"info","message":"Veritabanı tabloları başarıyla senkronize edildi.","service":"blogapp","timestamp":"2025-06-04 15:33:01"}
+{"level":"info","message":"Session store başarıyla senkronize edildi.","service":"blogapp","timestamp":"2025-06-04 15:33:01"}
+{"level":"info","message":"Server is running on port 3000","service":"blogapp","timestamp":"2025-06-04 15:33:01"}
+{"category":"database","database":"blogdb","dialect":"mysql","environment":"development","host":"localhost","level":"info","message":"Database connection established successfully","service":"blogapp","timestamp":"2025-06-04 15:33:12"}
+{"level":"info","message":"Veritabanı tabloları başarıyla senkronize edildi.","service":"blogapp","timestamp":"2025-06-04 15:33:12"}
+{"level":"info","message":"Session store başarıyla senkronize edildi.","service":"blogapp","timestamp":"2025-06-04 15:33:12"}
+{"level":"info","message":"Server is running on port 3000","service":"blogapp","timestamp":"2025-06-04 15:33:12"}
