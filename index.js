@@ -86,26 +86,42 @@ app.use(errorLogger);
 app.use(errorHandler);
 
 // Veritabanı senkronizasyonu
-const syncDatabase = async () => {
-    try {
-        // Test database connection first
-        await sequelize.authenticate();
-        logger.info("Veritabanı bağlantısı başarılı.");
-        
-        // force: false kullanarak mevcut tabloları koru, sadece eksikleri tamamla
-        await sequelize.sync({ force: false }); 
-        logger.info("Veritabanı tabloları başarıyla senkronize edildi.");
-        
-        // Session store'u sync et - artık timestamp kolonları mevcut
-        await sessionStore.sync();
-        logger.info("Session store başarıyla senkronize edildi.");
-        
-        // Test verilerini ekle - bu kısmı sadece geliştirme ortamında çalıştırmak için koşul ekleyin
-        // process.env.NODE_ENV === 'development' koşulunu ekleyebilirsiniz
-        // await seedDatabase();
-    } catch (err) {
-        logger.error("Veritabanı senkronizasyon hatası:", { error: err.message, stack: err.stack });
-        throw err; // Re-throw to prevent server from starting with broken DB
+const syncDatabase = async (retries = 3) => {
+    for (let i = 0; i < retries; i++) {
+        try {
+            logger.info(`Database connection attempt ${i + 1}/${retries}`);
+            
+            // Test database connection first with timeout
+            await sequelize.authenticate();
+            logger.info("Veritabanı bağlantısı başarılı.");
+            
+            // In production, use alter instead of sync for better compatibility
+            if (process.env.NODE_ENV === 'production') {
+                // Just ensure tables exist, don't alter structure
+                await sequelize.sync({ alter: false, force: false });
+            } else {
+                // force: false kullanarak mevcut tabloları koru, sadece eksikleri tamamla
+                await sequelize.sync({ force: false }); 
+            }
+            logger.info("Veritabanı tabloları başarıyla senkronize edildi.");
+            
+            // Session store'u sync et - artık timestamp kolonları mevcut
+            await sessionStore.sync();
+            logger.info("Session store başarıyla senkronize edildi.");
+            
+            return; // Success, exit retry loop
+            
+        } catch (err) {
+            logger.error(`Database sync attempt ${i + 1} failed:`, { error: err.message });
+            
+            if (i === retries - 1) {
+                logger.error("All database connection attempts failed:", { error: err.message, stack: err.stack });
+                throw err; // Re-throw to prevent server from starting with broken DB
+            }
+            
+            // Wait before retry
+            await new Promise(resolve => setTimeout(resolve, 5000 * (i + 1)));
+        }
     }
 };
 

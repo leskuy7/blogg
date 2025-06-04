@@ -18,12 +18,9 @@ module.exports = {
     port: parseInt(process.env.DB_PORT) || 3306,
     dialect: "mysql",
     logging: false
-  },  production: {
-    username: process.env.DB_USER || "root",
-    password: process.env.DB_PASSWORD || "",
-    database: process.env.DB_NAME || "blogdb_production", 
-    host: process.env.DB_HOST || "localhost",
-    port: parseInt(process.env.DB_PORT) || 3306,
+  },
+  production: {
+    use_env_variable: 'DATABASE_URL',
     dialect: "mysql",
     logging: false,
     dialectOptions: {
@@ -31,6 +28,12 @@ module.exports = {
         require: true,
         rejectUnauthorized: false
       }
+    },
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 30000,
+      idle: 10000
     }
   }
 };
