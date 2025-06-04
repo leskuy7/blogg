@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <%- include('../partials/head') %>
+    <meta http-equiv="refresh" content="<%= remainingTime %>">
+</head>
+<body>
+    <%- include('../partials/nav') %>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-8 offset-md-2 text-center">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-5">
+                        <div class="mb-4">
+                            <i class="bi bi-clock-history display-1 text-warning"></i>
+                        </div>
+                        <h1 class="h2 mb-3 text-warning">429 - Çok Fazla İstek</h1>
+                        <p class="text-muted mb-4">
+                            <%= message %>
+                        </p>
+                        
+                        <!-- Geri sayım -->
+                        <div class="alert alert-warning mb-4">
+                            <h5>Kalan Süre: <span id="countdown"><%= remainingTime %></span> saniye</h5>
+                            <div class="progress mt-2">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning" 
+                                     role="progressbar" style="width: 100%" id="progressBar"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Bilgilendirme -->
+                        <div class="alert alert-info">
+                            <h6>📋 Güvenlik Kuralları</h6>
+                            <p class="mb-1">• <strong><%= Math.ceil(windowMs / 1000) %> saniye</strong> içinde maksimum <strong><%= maxRequests %> deneme</strong> yapabilirsiniz</p>
+                            <p class="mb-0">• Bu kısıtlama hesap güvenliğiniz içindir</p>
+                        </div>
+                        
+                        <div class="d-flex justify-content-center gap-3 mt-4">
+                            <a href="/" class="btn btn-primary">
+                                <i class="bi bi-house me-2"></i>Anasayfa
+                            </a>
+                            <button onclick="window.history.back()" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Geri Dön
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <%- include('../partials/scripts') %>
+    <!-- SADECE BU YETER! Gereksiz script kaldırıldı -->
+</body>
+</html>

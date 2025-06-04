@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <%- include('../partials/head') %>
+</head>
+<body>
+    <%- include('../partials/nav') %>
+
+    <div class="container mt-3">
+        <%- include('../partials/flash-messages') %>
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="h3 mb-4">
+                    Admin Kategori Listesi
+                    <a href="/admin/category/create" class="btn btn-primary float-end">Yeni Kategori</a>
+                </h1>
+
+                <!-- Kategori Düzenleme Formu -->
+                <div id="editCategoryFormContainer" class="mb-4" style="display: none;">
+                    <form id="editCategoryForm" method="POST" action="">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                        <input type="hidden" id="categoryId" name="categoryId">
+                        <div class="mb-3">
+                            <label for="categoryName" class="form-label">Kategori Adı</label>
+                            <input type="text" class="form-control" id="categoryName" name="categoryName" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Kaydet</button>
+                        <button type="button" class="btn btn-secondary" onclick="hideEditCategoryForm()">İptal</button>
+                    </form>
+                </div>
+                
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">Id</th>
+                            <th>Kategori Adı</th>
+                            <th style="width: 180px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% categories.forEach(category => { %>
+                            <tr>
+                                <td><%= category.categoryId %></td>
+                                <td><%= category.name %></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" onclick="showEditCategoryForm('<%= category.categoryId %>', '<%= category.name %>', '<%= currentPage %>')">Düzenle</button>
+                                    <a class="btn btn-sm btn-danger" href="#" onclick="confirmDelete(event, '/admin/category/delete/<%= category.categoryId %>?page=<%= currentPage %>')">Sil</a>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+
+                <!-- Sayfalama -->
+                <% if (totalPages > 1) { %>
+                    <%- include('../partials/pagination', { currentPage: currentPage, totalPages: totalPages }) %>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../partials/delete-modal') %>
+    <%- include('../partials/scripts') %>
+
+    <script>
+        function showEditCategoryForm(categoryId, categoryName, currentPage) {
+            document.getElementById('categoryId').value = categoryId;
+            document.getElementById('categoryName').value = categoryName;
+            document.getElementById('editCategoryFormContainer').style.display = 'block';
+            document.getElementById('editCategoryForm').action = `/admin/category/${categoryId}?page=${currentPage}`;
+        }
+
+        function hideEditCategoryForm() {
+            document.getElementById('editCategoryFormContainer').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

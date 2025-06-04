@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <%- include('../partials/head') %>
+</head>
+<body>
+    <%- include('../partials/nav') %>
+    <div class="container mt-5">
+        <%- include('../partials/flash-messages') %>
+        <% if (message) { %>
+            <div class="alert alert-<%= message.class %>">
+                <%= message.text %>
+            </div>
+        <% } %>
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <h1 class="h3 mb-4">Kayıt Ol</h1>
+                <form action="/auth/register" method="POST">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <div class="mb-3">
+                        <label for="fullname" class="form-label">Ad Soyad</label>
+                        <input type="text" class="form-control" id="fullname" name="fullname" value="<%= formData ? formData.fullname : '' %>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" value="<%= formData ? formData.email : '' %>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Şifre</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">Şifre Tekrar</label>
+                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary mb-4">Kayıt Ol</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <%- include('../partials/scripts') %>
+</body>
+</html>

@@ -1,0 +1,4 @@
+{"category":"auth","email":"test@example.com","level":"info","message":"Test auth log","service":"blogapp","timestamp":"2025-06-03 13:16:17","userId":1}
+{"category":"auth","email":"yksel124@gmail.com","fullname":"yuksel","ip":"::1","level":"info","message":"User registration attempt","service":"blogapp","timestamp":"2025-06-03 15:53:30"}
+{"category":"auth","email":"yksel124@gmail.com","fullname":"yuksel","ip":"::1","level":"info","message":"User registered successfully","service":"blogapp","timestamp":"2025-06-03 15:53:30","userId":10}
+{"category":"auth","email":"yksel124@gmail.com","level":"info","message":"Verification email sent successfully","previewUrl":"https://ethereal.email/message/Z9nTK0qwqeW92kFEaD7wStmj0lJfc8x3AAAAIzaOgNHL7LzdvCxmNxxo6AA","service":"blogapp","timestamp":"2025-06-03 15:53:32","userId":10}

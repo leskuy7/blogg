@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <%- include('../partials/head') %>
+</head>
+<body>
+    <%- include('../partials/nav') %>
+    <div class="container mt-5">
+        <%- include('../partials/flash-messages') %>
+        <% if (typeof message != 'undefined') { %>
+            <div class="alert alert-<%= message.class%>">
+                <%= message.text %>
+            </div>
+        <% } %>
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <h1 class="h3 mb-4">Giriş yap</h1>
+                <form action="/auth/login" method="POST">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <input type="hidden" name="returnUrl" value="<%= returnUrl %>">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Şifre</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="password" name="password" >
+                            <button type="button" class="btn btn-outline-secondary" id="togglePassword">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary mb-4">Giriş Yap</button>
+                    <div class="mb-3">
+                        <a href="password-reset">Şifrenizi mi unuttunuz?</a>
+                    </div>
+                    <div class="mb-3">
+                        <a href="resend-verification">Email doğrulama linkini yeniden gönder</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <%- include('../partials/scripts') %>
+</body>
+</html>
