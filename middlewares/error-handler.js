@@ -73,6 +73,9 @@ const errorHandler = (err, req, res, next) => {
     // Flash message ayarla
     if (req.flash) {
         req.flash('error', message);
+    }    // Response'un zaten gönderilip gönderilmediğini kontrol et
+    if (res.headersSent) {
+        return next(err);
     }
 
     // AJAX istekleri için JSON response
@@ -88,7 +91,7 @@ const errorHandler = (err, req, res, next) => {
     }
 
     // Normal istekler için redirect
-    res.redirect(redirectTo);
+    return res.redirect(redirectTo);
 };
 
 // 404 handler
