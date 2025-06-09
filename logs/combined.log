@@ -1766,3 +1766,17 @@
 {"level":"info","message":"Session store başarıyla senkronize edildi.","service":"blogapp","timestamp":"2025-06-04 16:00:07"}
 {"level":"info","message":"Server is running on port 3000","service":"blogapp","timestamp":"2025-06-04 16:00:07"}
 {"level":"info","message":"Environment: development","service":"blogapp","timestamp":"2025-06-04 16:00:07"}
+{"level":"info","message":"Database connection attempt 1/3","service":"blogapp","timestamp":"2025-06-08 00:49:23"}
+{"category":"database","database":"blogdb","dialect":"mysql","environment":"development","host":"localhost","level":"info","message":"Database connection established successfully","service":"blogapp","timestamp":"2025-06-08 00:49:23"}
+{"level":"info","message":"Veritabanı bağlantısı başarılı.","service":"blogapp","timestamp":"2025-06-08 00:49:23"}
+{"level":"info","message":"Veritabanı tabloları başarıyla senkronize edildi.","service":"blogapp","timestamp":"2025-06-08 00:49:23"}
+{"level":"info","message":"Session store başarıyla senkronize edildi.","service":"blogapp","timestamp":"2025-06-08 00:49:23"}
+{"level":"info","message":"Server is running on port 3000","service":"blogapp","timestamp":"2025-06-08 00:49:23"}
+{"level":"info","message":"Environment: development","service":"blogapp","timestamp":"2025-06-08 00:49:23"}
+{"category":"business","isAuthenticated":false,"level":"info","message":"Business Action: Home page accessed","service":"blogapp","timestamp":"2025-06-08 00:49:51","userId":null}
+{"category":"access","ip":"::1","level":"info","message":"HTTP Request","method":"GET","responseTime":"43ms","service":"blogapp","statusCode":200,"timestamp":"2025-06-08 00:49:51","url":"/","user":"Anonymous","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"}
+{"category":"access","ip":"::1","level":"error","message":"HTTP Error","method":"GET","responseTime":"11ms","service":"blogapp","statusCode":404,"timestamp":"2025-06-08 00:49:51","url":"/resimler/default-blog.jpg","user":"Anonymous","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"}
+{"category":"access","ip":"::1","level":"error","message":"HTTP Error","method":"GET","responseTime":"6ms","service":"blogapp","statusCode":404,"timestamp":"2025-06-08 00:49:52","url":"/resimler/default-blog.jpg","user":"Anonymous","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"}
+{"category":"access","ip":"::1","level":"error","message":"HTTP Error","method":"GET","responseTime":"4ms","service":"blogapp","statusCode":404,"timestamp":"2025-06-08 00:49:52","url":"/favicon.ico","user":"Anonymous","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"}
+{"category":"business","isAuthenticated":false,"level":"info","message":"Business Action: All blogs page accessed","page":1,"service":"blogapp","timestamp":"2025-06-08 00:49:54","userId":null}
+{"category":"access","ip":"::1","level":"info","message":"HTTP Request","method":"GET","responseTime":"22ms","service":"blogapp","statusCode":200,"timestamp":"2025-06-08 00:49:54","url":"/blogs","user":"Anonymous","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"}
