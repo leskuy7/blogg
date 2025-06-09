@@ -4,15 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "test:railway": "node test-railway-connection.js",
-    "debug:env": "node debug-railway-env.js",
-    "check:mysql": "node check-railway-mysql.js",
     "dev": "nodemon index.js",
-    "prod": "NODE_ENV=production node index.js",
-    "migrate": "npx sequelize-cli db:migrate",
-    "build": "echo 'Build completed - no database operations in build phase'"
+    "build": "npm install",
+    "migrate": "npx sequelize-cli db:migrate"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
