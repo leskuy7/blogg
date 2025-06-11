@@ -1,0 +1,8 @@
+<div class="card mb-3">
+    <img src="/resimler/<%= blog.resim %>" class="card-img-top" alt="<%= blog.title %>">
+    <div class="card-body">
+        <h5 class="card-title"><%= blog.title %></h5>
+        <p class="card-text"><%= stripTags(blog.altbaslik) %></p>
+        <a href="/blogs/<%= blog.slug %>" class="btn btn-primary">Devamını Oku</a>
+    </div>
+</div>

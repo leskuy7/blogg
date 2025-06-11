@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <%- include('../partials/head') %>
+</head>
+<body>
+    <%- include('../partials/nav') %>
+    <div class="container mt-3">
+        <%- include('../partials/flash-messages') %>
+        <div class="row">
+            <div class="col-md-10 offset-md-1">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h1 class="h3 mb-4">Blog Düzenle</h1>
+                        <form action="/admin/blog/edit/<%= blog.blogId %>?_csrf=<%= csrfToken %>" method="POST" enctype="multipart/form-data">
+                            <!-- Sayfa numarasını form verisi olarak gönder -->
+                            <input type="hidden" name="pageNumber" value="<%= currentPage %>">
+                            
+                            <!-- Form alanlarını dahil et -->
+                            <%- include('../partials/form-fields', { blog: blog, categories: categories, formData: formData }) %>
+
+                            <!-- Mevcut resmi korumak için gizli alan -->
+                            <input type="hidden" name="currentResim" value="<%= blog.resim %>">
+                            <button type="submit" class="btn btn-primary">Kaydet</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <%- include('../partials/scripts') %>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <%- include('../partials/head') %>
+</head>
+<body>
+    <%- include('../partials/nav') %>
+    <div class="container mt-5">
+        <div class="row">
+            <!-- Kategori Menüsü -->
+            <div class="col-md-3 category-menu">
+                <%- include('../partials/category-menu', { categories: categories, selectedCategory: selectedCategory }) %>
+            </div>
+
+            <!-- Blog Listesi -->
+            <div class="col-md-9">
+                <h1 class="h3 mb-4">
+                    <%= title %>
+                    <% if (selectedCategory) { %>
+                        <small class="text-muted">Kategori: <%= categories.find(c => c.categoryId == selectedCategory).name %></small>
+                    <% } %>
+                </h1>
+
+                <% if (blogs.length === 0) { %>
+                    <div class="alert alert-warning">Bu kategoride blog bulunamadı</div>
+                <% } else { %>
+                    <div class="row">
+                        <% blogs.forEach(blog => { %>
+                            <div class="col-md-4 mb-4">
+                                <div class="card">
+                                    <% if (blog.resim) { %>
+                                        <img src="/resimler/<%= blog.resim %>" class="card-img-top" alt="<%= blog.title %>" style="height: 200px; object-fit: cover;">
+                                    <% } else { %>
+                                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                            <i class="bi bi-image display-4 text-muted"></i>
+                                        </div>
+                                    <% } %>
+                                    <div class="card-body">
+                                        <h5 class="card-title"><%= blog.title %></h5>
+                                        <p class="card-text"><%= stripTags(blog.altbaslik) %></p>
+                                        <a href="/blogs/<%= blog.slug %>" class="btn btn-primary">Devamını Oku</a>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }) %>
+                    </div>
+                <% } %>
+
+                <!-- Sayfalama -->
+                <% if (totalPages > 1) { %>
+                    <div class="mt-5">
+                        <%- include('../partials/pagination', {
+                            totalPages: totalPages,
+                            currentPage: currentPage,
+                             baseUrl: selectedCategory ? `/blogs/category/${categories.find(c => c.categoryId == selectedCategory).slug}` : '/blogs'
+                        }) %>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+    <%- include('../partials/scripts') %>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <%- include('../partials/head') %>
+</head>
+<body>
+    <%- include('../partials/nav') %>
+    <div class="container mt-5">
+        <%- include('../partials/flash-messages') %>
+        <form id="blogForm" action="/admin/blog/create?_csrf=<%= csrfToken %>" method="POST" enctype="multipart/form-data">
+            <%- include('../partials/form-fields', { blog: {}, categories: categories, formData: formData }) %>
+            <button type="submit" class="btn btn-primary">Kaydet</button>
+        </form>
+    </div>
+    <%- include('../partials/scripts') %>
+    <script src="/js/admin.js"></script>
+</body>
+</html>

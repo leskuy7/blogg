@@ -1,0 +1,142 @@
+<!-- Blog Form Fields Partial -->
+<input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="mb-3">
+            <label for="title" class="form-label">Başlık <span class="text-danger">*</span></label>
+            <input type="text" 
+                   class="form-control" 
+                   id="title" 
+                   name="title" 
+                   value="<%= formData && formData.title ? formData.title : (blog && blog.title ? blog.title : '') %>" 
+                   required>
+        </div>
+
+        <div class="mb-3">
+            <label for="altbaslik" class="form-label">Alt Başlık <span class="text-danger">*</span></label>
+            <input type="text" 
+                   class="form-control" 
+                   id="altbaslik" 
+                   name="altbaslik" 
+                   value="<%= formData && formData.altbaslik ? formData.altbaslik : (blog && blog.altbaslik ? blog.altbaslik : '') %>" 
+                   required>
+        </div>
+
+        <div class="mb-3">
+            <label for="slug" class="form-label">URL Slug <span class="text-danger">*</span></label>
+            <input type="text" 
+                   class="form-control" 
+                   id="slug" 
+                   name="slug" 
+                   value="<%= formData && formData.slug ? formData.slug : (blog && blog.slug ? blog.slug : '') %>" 
+                   required>
+            <div class="form-text">URL'de görünecek blog adresi (otomatik oluşturulur)</div>
+        </div>
+
+        <div class="mb-3">
+            <label for="content" class="form-label">İçerik <span class="text-danger">*</span></label>
+            <textarea class="form-control" 
+                      id="content" 
+                      name="content" 
+                      rows="15" 
+                      required><%= formData && formData.content ? formData.content : (blog && blog.content ? blog.content : '') %></textarea>
+            <div class="form-text">Blog içeriğinizi buraya yazın. HTML etiketleri kullanabilirsiniz.</div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="mb-3">
+            <label for="resim" class="form-label">
+                Blog Resmi 
+                <% if (!blog || !blog.blogId) { %>
+                    <span class="text-danger">*</span>
+                <% } %>
+            </label>
+            <input type="file" 
+                   class="form-control" 
+                   id="resim" 
+                   name="resim" 
+                   accept="image/*"
+                   <% if (!blog || !blog.blogId) { %>required<% } %>>
+            <div class="form-text">JPEG, PNG veya GIF formatında, maksimum 5MB</div>
+            
+            <% if (blog && blog.resim) { %>
+                <div class="mt-2">
+                    <img src="/resimler/<%= blog.resim %>" 
+                         alt="Mevcut resim" 
+                         class="img-thumbnail" 
+                         style="max-width: 200px;">
+                    <div class="form-text">Mevcut resim. Yeni resim yüklerseniz değiştirilecek.</div>
+                </div>
+            <% } %>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Kategoriler</label>
+            <% if (categories && categories.length > 0) { %>
+                <% categories.forEach(category => { %>
+                    <div class="form-check">
+                        <input class="form-check-input" 
+                               type="checkbox" 
+                               name="categoryIds" 
+                               value="<%= category.categoryId %>" 
+                               id="category<%= category.categoryId %>"
+                               <% 
+                               // Debug için console.log ekleyelim
+                               let isChecked = false;
+                               
+                               // Form data kontrolü (validation hatası sonrası)
+                               if (typeof formData !== 'undefined' && formData && formData.categoryIds) {
+                                   if (Array.isArray(formData.categoryIds)) {
+                                       isChecked = formData.categoryIds.includes(category.categoryId.toString());
+                                   } else {
+                                       isChecked = formData.categoryIds == category.categoryId.toString();
+                                   }
+                               }
+                               // Blog edit sayfasında mevcut kategorileri kontrol et
+                               else if (typeof blog !== 'undefined' && blog && blog.Categories && Array.isArray(blog.Categories)) {
+                                   isChecked = blog.Categories.some(c => c.categoryId == category.categoryId);
+                               }
+                               %>
+                               <% if (isChecked) { %>checked<% } %>>
+                        <label class="form-check-label" for="category<%= category.categoryId %>">
+                            <%= category.name %>
+                        </label>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <p class="text-muted">Henüz kategori oluşturulmamış.</p>
+                <a href="/admin/category/create" class="btn btn-sm btn-outline-primary">Kategori Oluştur</a>
+            <% } %>
+        </div>
+
+        <div class="mb-3">
+            <div class="form-check">
+                <input class="form-check-input" 
+                       type="checkbox" 
+                       name="anasayfa" 
+                       value="true" 
+                       id="anasayfa"
+                       <% if ((formData && formData.anasayfa) || (blog && blog.anasayfa)) { %>checked<% } %>>
+                <label class="form-check-label" for="anasayfa">
+                    Anasayfada Göster
+                </label>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <div class="form-check">
+                <input class="form-check-input" 
+                       type="checkbox" 
+                       name="onay" 
+                       value="true" 
+                       id="onay"
+                       <% if ((formData && formData.onay) || (blog && blog.onay)) { %>checked<% } %>>
+                <label class="form-check-label" for="onay">
+                    Yayınla (Onaylı)
+                </label>
+            </div>
+        </div>
+    </div>
+</div>

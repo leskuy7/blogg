@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <%- include('../partials/head') %>
+</head>
+<body>
+    <%- include('../partials/nav') %>
+    <div class="container mt-5">
+        <h1 class="h3 mb-4 text-center">Kullanıcı Rolleri</h1>
+
+        <!-- Flash mesajları -->
+        <%- include('../partials/flash-messages') %>
+
+        <!-- Kullanıcı Rolleri Tablosu -->
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Ad Soyad</th>
+                        <th>E-posta</th>
+                        <th>Mevcut Rol</th>
+                        <th>Yeni Rol Atama</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% users.forEach(user => { %>
+                        <tr>
+                            <td><%= user.fullname %></td>
+                            <td><%= user.email %></td>
+                            <td><%= user.rolename ? user.rolename : 'Belirtilmemiş' %></td>
+                            <td>
+                                <form action="/auth/roles/assign" method="POST" class="d-inline">
+                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                    <input type="hidden" name="userId" value="<%= user.userId %>">
+                                    <select name="rolename" class="form-select d-inline w-auto">
+                                        <option value="admin" <%= user.rolename === 'admin' ? 'selected' : '' %>>Admin</option>
+                                        <option value="moderator" <%= user.rolename === 'moderator' ? 'selected' : '' %>>Moderator</option>
+                                        <option value="user" <%= user.rolename === 'user' ? 'selected' : '' %>>User</option>
+                                    </select>
+                                    <button type="submit" class="btn btn-primary btn-sm">Ata</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <%- include('../partials/scripts') %>
+</body>
+</html>

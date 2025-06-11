@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <%- include('../partials/head') %>
+</head>
+<body>
+    <%- include('../partials/nav') %>
+    <div class="container mt-5">
+        <%- include('../partials/flash-messages') %>
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <h1 class="h3 mb-4">Email Doğrulama Linkini Yeniden Gönder</h1>
+                <form action="/auth/resend-verification" method="POST">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">E-posta Adresi</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="E-posta adresinizi girin" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary mb-4">Doğrulama Emaili Gönder</button>
+                    <div class="mb-3">
+                        <a href="/auth/login">Giriş sayfasına dön</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <%- include('../partials/scripts') %>
+</body>
+</html>
