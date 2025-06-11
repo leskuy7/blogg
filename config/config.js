@@ -19,17 +19,27 @@ module.exports = {
     dialect: "mysql",
     logging: false
   },  production: {
-    username: process.env.DB_USER || process.env.MYSQLUSER || "root",
-    password: process.env.DB_PASSWORD || process.env.MYSQLPASSWORD,
-    database: process.env.DB_NAME || process.env.MYSQLDATABASE || "railway",
-    host: process.env.DB_HOST || process.env.MYSQLHOST,
-    port: parseInt(process.env.DB_PORT || process.env.MYSQLPORT),
+    username: process.env.DB_USER || "root",
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME || "railway",
+    host: process.env.DB_HOST,
+    port: parseInt(process.env.DB_PORT || "3306"),
     dialect: "mysql",
     dialectOptions: {
       ssl: {
         rejectUnauthorized: false
-      }
+      },
+      connectTimeout: 60000
     },
-    logging: false
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 60000,
+      idle: 10000
+    },
+    logging: false,
+    retry: {
+      max: 3
+    }
   }
 };

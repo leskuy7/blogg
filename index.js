@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const flash = require('connect-flash');
@@ -157,3 +158,75 @@ const startup = require('./deploy-startup');
         process.exit(1);
     }
 })();
+
+// Uncaught error handler
+process.on('uncaughtException', (err) => {
+    console.error('Uncaught Exception:', err);
+    // Kritik hatada temiz bir şekilde kapat
+    process.exit(1);
+});
+
+process.on('unhandledRejection', (err) => {
+    console.error('Unhandled Rejection:', err);
+    // Kritik hatada temiz bir şekilde kapat
+    process.exit(1);
+});
+
+// Database bağlantısını bekle
+const sequelize = require('./data/db');
+let server;
+
+const startServer = async () => {
+    try {
+        // Veritabanı bağlantısını kontrol et
+        await sequelize.authenticate();
+        console.log('Database connection is ready');
+
+        // ...existing middleware setups...
+
+        const PORT = process.env.PORT || 3000;
+        server = app.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}`);
+        });
+
+        // Graceful shutdown
+        process.on('SIGTERM', () => {
+            console.log('SIGTERM received. Shutting down gracefully...');
+            shutdown();
+        });
+
+        process.on('SIGINT', () => {
+            console.log('SIGINT received. Shutting down gracefully...');
+            shutdown();
+        });
+
+    } catch (error) {
+        console.error('Unable to start server:', error);
+        process.exit(1);
+    }
+};
+
+const shutdown = async () => {
+    try {
+        console.log('Starting graceful shutdown...');
+        
+        // HTTP sunucusunu kapat
+        if (server) {
+            await new Promise((resolve) => {
+                server.close(resolve);
+            });
+            console.log('HTTP server closed');
+        }
+
+        // Veritabanı bağlantısını kapat
+        await sequelize.close();
+        console.log('Database connection closed');
+
+        process.exit(0);
+    } catch (err) {
+        console.error('Error during shutdown:', err);
+        process.exit(1);
+    }
+};
+
+startServer();
