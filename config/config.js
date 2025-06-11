@@ -19,10 +19,10 @@ module.exports = {
     dialect: "mysql",
     logging: false
   },  production: {
-    host: process.env.RAILWAY_TCP_PROXY_DOMAIN || "switchback.proxy.rlwy.net",
-    port: process.env.RAILWAY_TCP_PROXY_PORT || "55611",
+    host: process.env.MYSQLHOST || "mysql.railway.internal",
+    port: process.env.MYSQLPORT || 3306,
     username: process.env.MYSQLUSER || "root",
-    password: process.env.MYSQL_ROOT_PASSWORD,
+    password: process.env.MYSQL_ROOT_PASSWORD || "ZkvecwfXEwCTERekcnVgCsqwEFZDmrSb",
     database: process.env.MYSQL_DATABASE || "railway",
     dialect: "mysql",
     logging: false,
