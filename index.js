@@ -182,14 +182,11 @@ const startServer = async () => {
         await sequelize.authenticate();
         console.log('Database connection is ready');
 
-        // ...existing middleware setups...
+        // ... existing middleware setups ...
 
-        const PORT = process.env.PORT || 8080; // Railway için varsayılan port 8080
+        const PORT = process.env.PORT || 8080;
         server = app.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}`);
-            console.log('Environment:', process.env.NODE_ENV);
-            console.log('Database Host:', process.env.DB_HOST);
-            console.log('Database Port:', process.env.DB_PORT);
         });
 
         // Graceful shutdown
