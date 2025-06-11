@@ -44,14 +44,23 @@ async function runMigrations() {
         logger.info('Running database migrations...');
         await execPromise('npx sequelize-cli db:migrate');
         logger.info('Migrations completed successfully');
+        
+        // Eğer SEED_DATABASE çevre değişkeni true ise
+        if (process.env.SEED_DATABASE === 'true') {
+            logger.info('Running database seeding...');
+            await require('./helpers/seed-data')();
+            logger.info('Database seeding completed successfully');
+        }
     } catch (error) {
-        logger.error('Migration failed:', error);
+        logger.error('Migration/Seeding failed:', error);
         throw error;
     }
 }
 
 async function startApplication() {
     try {
+        logger.info('Starting application...');
+        
         // Wait for database
         await waitForDatabase();
         
@@ -59,7 +68,6 @@ async function startApplication() {
         await runMigrations();
         
         // Start the application
-        logger.info('Starting application...');
         const app = require('./index');
         
     } catch (error) {
