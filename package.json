@@ -9,8 +9,9 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "build": "npm install --legacy-peer-deps && npm install --legacy-peer-deps sequelize-cli && npm run migrate",
-    "migrate": "npx sequelize-cli db:migrate:undo:all && npx sequelize-cli db:migrate",
+    "build": "npm install && npx sequelize-cli db:migrate",
+    "migrate": "npx sequelize-cli db:migrate",
+    "migrate:reset": "npx sequelize-cli db:migrate:undo:all && npx sequelize-cli db:migrate",
     "migrate:status": "npx sequelize-cli db:migrate:status"
   },
   "dependencies": {
