@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "build": "npm install && npx sequelize-cli db:migrate",
+    "build": "npm install",
+    "postbuild": "npx sequelize-cli db:migrate",
     "migrate": "npx sequelize-cli db:migrate"
   },
   "dependencies": {
