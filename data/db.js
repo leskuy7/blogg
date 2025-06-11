@@ -7,13 +7,8 @@ const MAX_RETRIES = 5;
 
 const createConnection = async () => {
     try {
-        sequelize = new Sequelize(
-            process.env.DB_NAME || 'railway',
-            process.env.DB_USER || 'root',
-            process.env.DB_PASSWORD,
-            {
-                host: process.env.DB_HOST,
-                port: parseInt(process.env.DB_PORT || '3306'),
+        if (process.env.MYSQL_URL) {
+            sequelize = new Sequelize(process.env.MYSQL_URL, {
                 dialect: 'mysql',
                 dialectOptions: {
                     ssl: {
@@ -32,8 +27,36 @@ const createConnection = async () => {
                     timeout: 3000
                 },
                 logging: false
-            }
-        );
+            });
+        } else {
+            sequelize = new Sequelize(
+                process.env.MYSQLDATABASE || process.env.DB_NAME || 'railway',
+                process.env.MYSQLUSER || process.env.DB_USER || 'root',
+                process.env.MYSQLPASSWORD || process.env.DB_PASSWORD,
+                {
+                    host: process.env.MYSQLHOST || process.env.DB_HOST,
+                    port: parseInt(process.env.MYSQLPORT || process.env.DB_PORT || '3306'),
+                    dialect: 'mysql',
+                    dialectOptions: {
+                        ssl: {
+                            rejectUnauthorized: false
+                        },
+                        connectTimeout: 60000
+                    },
+                    pool: {
+                        max: 5,
+                        min: 0,
+                        acquire: 60000,
+                        idle: 10000
+                    },
+                    retry: {
+                        max: 3,
+                        timeout: 3000
+                    },
+                    logging: false
+                }
+            );
+        }
 
         await sequelize.authenticate();
         console.log('Database connection established successfully.');
@@ -44,7 +67,7 @@ const createConnection = async () => {
         if (retryCount < MAX_RETRIES) {
             retryCount++;
             console.log(`Retrying connection... Attempt ${retryCount}/${MAX_RETRIES}`);
-            await new Promise(resolve => setTimeout(resolve, 5000)); // 5 saniye bekle
+            await new Promise(resolve => setTimeout(resolve, 5000));
             return createConnection();
         }
         
@@ -55,7 +78,7 @@ const createConnection = async () => {
 // İlk bağlantıyı oluştur
 createConnection().catch(err => {
     console.error('Fatal database connection error:', err);
-    process.exit(1); // Kritik hata durumunda uygulamayı sonlandır
+    process.exit(1);
 });
 
 module.exports = sequelize;

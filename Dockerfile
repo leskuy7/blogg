@@ -8,24 +8,23 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production
+# Install dependencies with specific flags for production
+RUN npm ci --only=production --no-optional
 
 # Copy application files
 COPY . .
 
+# Environment variables
 ENV NODE_ENV=production \
-    PORT=8080 \
-    DB_HOST="switchback.proxy.rlwy.net" \
-    DB_PORT="55611" \
-    DB_USER="root" \
-    DB_PASSWORD="${MYSQLPASSWORD}" \
-    DB_NAME="railway"
+    NODE_OPTIONS="--max-old-space-size=512" \
+    PORT=8080
 
-EXPOSE 8080
-
-# Health check ekle
+# Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:8080/ || exit 1
+    CMD wget --no-verbose --tries=1 --spider http://localhost:${PORT}/ || exit 1
 
-CMD ["npm", "start"]
+# Expose the port the app runs on
+EXPOSE ${PORT}
+
+# Start the application with proper error handling
+CMD ["node", "deploy-startup.js"]

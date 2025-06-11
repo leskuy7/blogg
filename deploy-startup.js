@@ -1,85 +1,72 @@
-const { sequelize } = require('./models');
-const { spawn } = require('child_process');
+require('dotenv').config();
 const { logger } = require('./helpers/logger');
 
-// Function to run migration
-const runMigration = () => {
-    return new Promise((resolve, reject) => {
-        const migrate = spawn('npx', ['sequelize-cli', 'db:migrate'], {
-            stdio: 'inherit',
-            shell: true
-        });
+// Uncaught exception handler
+process.on('uncaughtException', (error) => {
+    logger.error('Uncaught Exception:', error);
+    process.exit(1);
+});
 
-        migrate.on('close', (code) => {
-            if (code === 0) {
-                logger.info('Migration completed successfully');
-                resolve();
-            } else {
-                logger.error(`Migration failed with code ${code}`);
-                reject(new Error(`Migration failed with code ${code}`));
-            }
-        });
+process.on('unhandledRejection', (error) => {
+    logger.error('Unhandled Rejection:', error);
+    process.exit(1);
+});
 
-        migrate.on('error', (err) => {
-            logger.error('Migration process error:', err);
-            reject(err);
-        });
-    });
-};
+// Database ve migration işlemleri için
+const { sequelize } = require('./models');
+const { exec } = require('child_process');
+const util = require('util');
+const execPromise = util.promisify(exec);
 
-// Function to start the main application
-const startApp = () => {
-    return new Promise((resolve, reject) => {
-        const app = spawn('node', ['index.js'], {
-            stdio: 'inherit',
-            shell: true
-        });
+const MAX_RETRIES = 5;
+const RETRY_DELAY = 5000;
 
-        app.on('close', (code) => {
-            logger.info(`App process exited with code ${code}`);
-            resolve();
-        });
-
-        app.on('error', (err) => {
-            logger.error('App process error:', err);
-            reject(err);
-        });
-    });
-};
-
-async function waitForDatabase(retries = 5, delay = 5000) {
+async function waitForDatabase(retries = MAX_RETRIES) {
     for (let i = 0; i < retries; i++) {
         try {
+            logger.info(`Database connection attempt ${i + 1}/${retries}`);
             await sequelize.authenticate();
-            logger.info('Database connection established successfully');
+            logger.info('Database connection has been established successfully.');
             return true;
         } catch (error) {
-            logger.error(`Database connection attempt ${i + 1} failed:`, error.message);
+            logger.error('Unable to connect to the database:', error);
             if (i < retries - 1) {
-                logger.info(`Retrying in ${delay/1000} seconds...`);
-                await new Promise(resolve => setTimeout(resolve, delay));
+                logger.info(`Retrying in ${RETRY_DELAY/1000} seconds...`);
+                await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
             }
         }
     }
-    throw new Error('Failed to connect to database after multiple attempts');
+    throw new Error('Failed to connect to database after multiple retries');
 }
 
-// Main deployment startup sequence
-(async () => {
+async function runMigrations() {
     try {
-        logger.info('Starting deployment startup sequence...');
-        
-        // Wait for database to be ready
-        await waitForDatabase();
+        logger.info('Running database migrations...');
+        await execPromise('npx sequelize-cli db:migrate');
+        logger.info('Migrations completed successfully');
+    } catch (error) {
+        logger.error('Migration failed:', error);
+        throw error;
+    }
+}
 
-        // Run migrations first
-        await runMigration();
+async function startApplication() {
+    try {
+        // Wait for database
+        await waitForDatabase();
         
-        // Then start the application
-        await startApp();
+        // Run migrations
+        await runMigrations();
+        
+        // Start the application
+        logger.info('Starting application...');
+        const app = require('./index');
         
     } catch (error) {
-        logger.error('Deployment startup failed:', error);
+        logger.error('Startup failed:', error);
         process.exit(1);
     }
-})();
+}
+
+// Start the application
+startApplication();
