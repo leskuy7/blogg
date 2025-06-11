@@ -7,13 +7,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node deploy-startup.js",
     "dev": "nodemon index.js",
-    "build": "npm ci --only=production",
-    "migrate": "sequelize-cli db:migrate",
-    "migrate:reset": "sequelize-cli db:migrate:undo:all && sequelize-cli db:migrate",
-    "migrate:status": "sequelize-cli db:migrate:status",
-    "railway:start": "node deploy-startup.js && node index.js"
+    "build": "echo 'No build step required'",
+    "migrate": "npx sequelize-cli db:migrate",
+    "seed": "cross-env SEED_DATABASE=true node deploy-startup.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",

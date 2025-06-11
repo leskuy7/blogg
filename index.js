@@ -137,7 +137,7 @@ const startup = require('./deploy-startup');
             await syncDatabase();
         }
         
-        const PORT = process.env.PORT || 3000;
+        const PORT = process.env.PORT || 8080; // Railway için varsayılan port 8080
         const server = app.listen(PORT, () => {
             logger.info(`Server is running on port ${PORT}`);
             logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
@@ -184,9 +184,12 @@ const startServer = async () => {
 
         // ...existing middleware setups...
 
-        const PORT = process.env.PORT || 3000;
+        const PORT = process.env.PORT || 8080; // Railway için varsayılan port 8080
         server = app.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}`);
+            console.log('Environment:', process.env.NODE_ENV);
+            console.log('Database Host:', process.env.DB_HOST);
+            console.log('Database Port:', process.env.DB_PORT);
         });
 
         // Graceful shutdown

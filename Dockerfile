@@ -14,33 +14,18 @@ RUN npm ci --only=production
 # Copy application files
 COPY . .
 
-# Create wait-for script with longer timeout and more detailed logs
-RUN echo '#!/bin/sh\n\
-max_attempts=30\n\
-attempt=1\n\
-while [ $attempt -le $max_attempts ]; do\n\
-  echo "Attempt $attempt/$max_attempts: Connecting to MySQL at ${DB_HOST:-switchback.proxy.rlwy.net}:${DB_PORT:-55611}..."\n\
-  if nc -z -w 5 ${DB_HOST:-switchback.proxy.rlwy.net} ${DB_PORT:-55611}; then\n\
-    echo "MySQL is ready!"\n\
-    exec "$@"\n\
-    exit 0\n\
-  fi\n\
-  attempt=$((attempt + 1))\n\
-  echo "Connection failed. Waiting 10 seconds before retrying..."\n\
-  sleep 10\n\
-done\n\
-echo "Failed to connect to MySQL after $max_attempts attempts"\n\
-exit 1' > /wait-for && chmod +x /wait-for
-
 ENV NODE_ENV=production \
-    NODE_OPTIONS="--max-old-space-size=512" \
-    DB_HOST="$MYSQLHOST" \
-    DB_PORT="$MYSQLPORT" \
-    DB_USER="$MYSQLUSER" \
-    DB_PASSWORD="$MYSQLPASSWORD" \
-    DB_NAME="$MYSQLDATABASE"
+    PORT=8080 \
+    DB_HOST="switchback.proxy.rlwy.net" \
+    DB_PORT="55611" \
+    DB_USER="root" \
+    DB_PASSWORD="${MYSQLPASSWORD}" \
+    DB_NAME="railway"
 
-EXPOSE 3000
+EXPOSE 8080
 
-# Use wait-for script before starting the application with longer timeout
-CMD ["/bin/sh", "-c", "/wait-for && npm run migrate && npm start"]
+# Health check ekle
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:8080/ || exit 1
+
+CMD ["npm", "start"]
