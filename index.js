@@ -125,10 +125,16 @@ const syncDatabase = async (retries = 3) => {
     }
 };
 
+const startup = require('./deploy-startup');
+
 // Sunucuyu başlat
 (async () => {
     try {
-        await syncDatabase();
+        if (process.env.NODE_ENV === 'production') {
+            await startup();
+        } else {
+            await syncDatabase();
+        }
         
         const PORT = process.env.PORT || 3000;
         const server = app.listen(PORT, () => {

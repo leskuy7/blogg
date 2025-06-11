@@ -1,3 +1,4 @@
+const { sequelize } = require('./models');
 const { spawn } = require('child_process');
 const { logger } = require('./helpers/logger');
 
@@ -46,11 +47,31 @@ const startApp = () => {
     });
 };
 
+async function waitForDatabase(retries = 5, delay = 5000) {
+    for (let i = 0; i < retries; i++) {
+        try {
+            await sequelize.authenticate();
+            logger.info('Database connection established successfully');
+            return true;
+        } catch (error) {
+            logger.error(`Database connection attempt ${i + 1} failed:`, error.message);
+            if (i < retries - 1) {
+                logger.info(`Retrying in ${delay/1000} seconds...`);
+                await new Promise(resolve => setTimeout(resolve, delay));
+            }
+        }
+    }
+    throw new Error('Failed to connect to database after multiple attempts');
+}
+
 // Main deployment startup sequence
 (async () => {
     try {
         logger.info('Starting deployment startup sequence...');
         
+        // Wait for database to be ready
+        await waitForDatabase();
+
         // Run migrations first
         await runMigration();
         

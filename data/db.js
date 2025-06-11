@@ -1,33 +1,29 @@
 const { Sequelize } = require('sequelize');
-const config = require('../config');
+require('dotenv').config();
 
-const sequelize = process.env.NODE_ENV === 'production' 
-  ? new Sequelize(
-      process.env.MYSQL_DATABASE,
-      process.env.MYSQLUSER,
-      process.env.MYSQL_ROOT_PASSWORD,
-      {
-        host: process.env.MYSQLHOST,
-        port: process.env.MYSQLPORT,
-        dialect: "mysql",
-        dialectOptions: {
-          ssl: {
-            require: true,
-            rejectUnauthorized: false
-          }
-        },
-        logging: false
-      })
-  : new Sequelize(config.db.database, config.db.user, config.db.password, {
-      dialect: "mysql",
-      host: config.db.host,
-      port: config.db.port,
-      logging: false,
-      storage: './session.mysql',
-      define: {
-        timestamps: false
-      }
-});
+const isProduction = process.env.NODE_ENV === 'production';
 
+const sequelize = new Sequelize(
+    process.env.MYSQL_DATABASE || 'railway',
+    process.env.MYSQLUSER || 'root',
+    process.env.MYSQL_ROOT_PASSWORD,
+    {
+        host: process.env.DB_HOST || 'switchback.proxy.rlwy.net',
+        port: parseInt(process.env.DB_PORT) || 55611,
+        dialect: 'mysql',
+        dialectOptions: isProduction ? {
+            ssl: {
+                rejectUnauthorized: false
+            }
+        } : {},
+        logging: false,
+        pool: {
+            max: 5,
+            min: 0,
+            acquire: 30000,
+            idle: 10000
+        }
+    }
+);
 
 module.exports = sequelize;

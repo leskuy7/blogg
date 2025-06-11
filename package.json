@@ -9,10 +9,11 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "build": "npm install && npx sequelize-cli db:migrate",
-    "migrate": "npx sequelize-cli db:migrate",
-    "migrate:reset": "npx sequelize-cli db:migrate:undo:all && npx sequelize-cli db:migrate",
-    "migrate:status": "npx sequelize-cli db:migrate:status"
+    "build": "npm ci --only=production",
+    "migrate": "sequelize-cli db:migrate",
+    "migrate:reset": "sequelize-cli db:migrate:undo:all && sequelize-cli db:migrate",
+    "migrate:status": "sequelize-cli db:migrate:status",
+    "railway:start": "node deploy-startup.js && node index.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
