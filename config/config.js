@@ -22,7 +22,7 @@ module.exports = {
     host: process.env.MYSQLHOST || "mysql.railway.internal",
     port: process.env.MYSQLPORT || 3306,
     username: process.env.MYSQLUSER || "root",
-    password: process.env.MYSQL_ROOT_PASSWORD || "ZkvecwfXEwCTERekcnVgCsqwEFZDmrSb",
+    password: process.env.MYSQL_ROOT_PASSWORD,
     database: process.env.MYSQL_DATABASE || "railway",
     dialect: "mysql",
     logging: false,
