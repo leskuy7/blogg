@@ -1,5 +1,6 @@
 const { Blog, Category } = require('../models');
 const { logger, logBusiness } = require('../helpers/logger'); // Logger'ı ekle
+const striptags = require('striptags');
 
 exports.getHome = async (req, res) => {
     try {
@@ -123,7 +124,9 @@ exports.getAllBlogs = async (req, res) => {
             totalPages: totalPages,
             currentPage: page,
             selectedCategory: null,
-            activePage: 'blogs',            isAuth: req.session.isAuth
+            activePage: 'blogs',
+            isAuth: req.session.isAuth,
+            stripTags: striptags
         });
     } catch (err) {
         logger.error("Blog listesi yükleme hatası:", { 
