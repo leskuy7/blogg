@@ -40,7 +40,7 @@ ENV NODE_ENV=production
 
 EXPOSE 8080
 
-HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=30s --start-period=120s --retries=5 \
     CMD wget --quiet --tries=1 --spider http://localhost:8080/health || exit 1
 
 CMD ["sh", "-c", "/wait-for && node deploy-startup.js"]
