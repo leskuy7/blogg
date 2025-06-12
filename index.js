@@ -120,25 +120,32 @@ app.get('/health', async (req, res) => {
         checkResult.checks.environment.missing = missingEnvVars;
         checkResult.status = 'error';
         return res.status(503).json(checkResult);
-    }
-
-    // Check database connection
+    }    // Check database connection with timeout
     try {
-        await sequelize.authenticate();
+        const dbCheckPromise = sequelize.authenticate();
+        const timeoutPromise = new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('Database connection timeout')), 5000)
+        );
+        
+        await Promise.race([dbCheckPromise, timeoutPromise]);
+        
         checkResult.checks.database = {
             status: 'ok',
             host: process.env.MYSQLHOST,
             port: process.env.MYSQLPORT,
-            database: process.env.MYSQLDATABASE
+            database: process.env.MYSQLDATABASE,
+            connectionTime: new Date().toISOString()
         };
     } catch (error) {
         checkResult.status = 'error';
         checkResult.checks.database = {
             status: 'error',
             message: error.message,
+            errorType: error.name,
             host: process.env.MYSQLHOST,
             port: process.env.MYSQLPORT,
-            database: process.env.MYSQLDATABASE
+            database: process.env.MYSQLDATABASE,
+            timestamp: new Date().toISOString()
         };
         return res.status(503).json(checkResult);
     }

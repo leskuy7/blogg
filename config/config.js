@@ -20,11 +20,11 @@ module.exports = {
     logging: false
   },
   production: {
-    username: process.env.MYSQLUSER || process.env.DB_USER,
-    password: process.env.MYSQLPASSWORD || process.env.DB_PASSWORD,
-    database: process.env.MYSQLDATABASE || process.env.DB_NAME || "railway",
-    host: process.env.MYSQLHOST || process.env.DB_HOST,
-    port: parseInt(process.env.MYSQLPORT || process.env.DB_PORT || "3306"),
+    username: process.env.MYSQLUSER,
+    password: process.env.MYSQLPASSWORD,
+    database: process.env.MYSQLDATABASE,
+    host: process.env.MYSQLHOST,
+    port: parseInt(process.env.MYSQLPORT || "3306"),
     dialect: "mysql",
     dialectOptions: {
       ssl: {
