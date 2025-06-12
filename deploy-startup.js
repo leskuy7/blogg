@@ -18,8 +18,8 @@ const { exec } = require('child_process');
 const util = require('util');
 const execPromise = util.promisify(exec);
 
-const MAX_RETRIES = 5;
-const RETRY_DELAY = 5000;
+const MAX_RETRIES = 3;  // 5'ten 3'e düşürelim
+const RETRY_DELAY = 3000;  // 5000'den 3000'e düşürelim
 
 async function waitForDatabase(retries = MAX_RETRIES) {
     for (let i = 0; i < retries; i++) {

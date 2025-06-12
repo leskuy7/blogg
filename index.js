@@ -126,7 +126,23 @@ const syncDatabase = async (retries = 3) => {
     }
 };
 
-const startup = require('./deploy-startup');
+const startup = async () => {
+    try {
+        const PORT = process.env.PORT || 8080;
+        await sequelize.authenticate();
+        
+        if (process.env.NODE_ENV === 'production') {
+            await sequelize.sync({ force: false });
+        }
+        
+        app.listen(PORT, () => {
+            console.log(`Server running on port ${PORT}`);
+        });
+    } catch (error) {
+        console.error('Startup failed:', error);
+        process.exit(1);
+    }
+};
 
 // Sunucuyu başlat
 (async () => {
