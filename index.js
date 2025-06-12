@@ -13,6 +13,9 @@ const { sequelize } = require('./models');
 const { flashMessages, stripTags, currentPath } = require('./middlewares/all');
 const locals = require('./middlewares/locals');
 
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({ 
