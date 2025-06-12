@@ -94,6 +94,9 @@ const startup = async () => {
             logger.info('Database synced in production mode');
         }
         
+        app.set('view engine', 'ejs');
+        app.set('views', path.join(__dirname, 'views'));
+        
         app.listen(PORT, () => {
             logger.info(`Server running on port ${PORT}`);
             logger.info(`Environment: ${process.env.NODE_ENV}`);
