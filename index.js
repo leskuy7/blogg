@@ -81,6 +81,11 @@ app.use('/', userRoutes);
 app.use('/admin', adminRoutes);
 app.use('/auth', authRoutes);
 
+// Health check route
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok' });
+});
+
 // Error handling middleware (must be after routes)
 app.use(notFoundHandler);
 app.use(errorLogger);

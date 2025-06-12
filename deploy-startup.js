@@ -70,6 +70,28 @@ async function startApplication() {
         // Start the application
         const app = require('./index');
         
+        // Veritabanı bağlantısını kontrol et
+        await waitForDatabase();
+        logger.info('Database connection successful');
+
+        // Uygulama portunu ayarla
+        const PORT = process.env.PORT || 8080;
+        
+        // Sunucuyu başlat
+        const server = app.listen(PORT, () => {
+            logger.info(`Server running on port ${PORT}`);
+            logger.info(`Environment: ${process.env.NODE_ENV}`);
+        });
+
+        // Graceful shutdown
+        process.on('SIGTERM', () => {
+            logger.info('SIGTERM signal received');
+            server.close(() => {
+                logger.info('HTTP server closed');
+                process.exit(0);
+            });
+        });
+
     } catch (error) {
         logger.error('Startup failed:', error);
         process.exit(1);
