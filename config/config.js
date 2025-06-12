@@ -2,20 +2,20 @@ require('dotenv').config();
 
 module.exports = {
   development: {
-    username: process.env.DB_USER || "root",
-    password: process.env.DB_PASSWORD || "",
-    database: process.env.DB_NAME || "blogdb",
-    host: process.env.DB_HOST || "localhost",
-    port: parseInt(process.env.DB_PORT) || 3306,
+    username: process.env.MYSQLUSER || "root",
+    password: process.env.MYSQLPASSWORD || "",
+    database: process.env.MYSQLDATABASE || "blogdb",
+    host: process.env.MYSQLHOST || "localhost",
+    port: parseInt(process.env.MYSQLPORT) || 3306,
     dialect: "mysql",
     logging: false
   },
   test: {
-    username: process.env.DB_USER || "root",
-    password: process.env.DB_PASSWORD || "",
-    database: process.env.DB_NAME + "_test" || "blogdb_test",
-    host: process.env.DB_HOST || "localhost",
-    port: parseInt(process.env.DB_PORT) || 3306,
+    username: process.env.MYSQLUSER || "root",
+    password: process.env.MYSQLPASSWORD || "",
+    database: process.env.MYSQLDATABASE + "_test" || "blogdb_test",
+    host: process.env.MYSQLHOST || "localhost",
+    port: parseInt(process.env.MYSQLPORT) || 3306,
     dialect: "mysql",
     logging: false
   },
@@ -24,7 +24,7 @@ module.exports = {
     password: process.env.MYSQLPASSWORD,
     database: process.env.MYSQLDATABASE,
     host: process.env.MYSQLHOST,
-    port: parseInt(process.env.MYSQLPORT || "3306"),
+    port: parseInt(process.env.MYSQLPORT),
     dialect: "mysql",
     dialectOptions: {
       ssl: {

@@ -14,7 +14,7 @@ RUN npm ci --only=production
 # Copy application files
 COPY . .
 
-# Create wait-for script without fallbacks
+# Create wait-for script - pure MYSQL* variables, no fallbacks
 RUN printf '#!/bin/sh\n\
 if [ -z "$MYSQLHOST" ] || [ -z "$MYSQLPORT" ]; then\n\
     echo "Error: MYSQLHOST and MYSQLPORT environment variables must be set"\n\
@@ -22,9 +22,10 @@ if [ -z "$MYSQLHOST" ] || [ -z "$MYSQLPORT" ]; then\n\
 fi\n\
 \n\
 echo "Waiting for MySQL at $MYSQLHOST:$MYSQLPORT..."\n\
-max=30; i=1\n\
+i=1\n\
+max=30\n\
 while ! nc -z "$MYSQLHOST" "$MYSQLPORT"; do\n\
-    echo "[$i/$max] Waiting for MySQL to be ready..."\n\
+    echo "[$i/$max] Waiting for MySQL at $MYSQLHOST:$MYSQLPORT..."\n\
     i=$((i+1))\n\
     if [ $i -gt $max ]; then\n\
         echo "Error: MySQL connection timeout after $max attempts"\n\

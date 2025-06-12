@@ -13,7 +13,7 @@ const { sequelize } = require('./models');
 
 // Basic health check that doesn't require database
 app.get('/', (req, res) => {
-    res.send('OK');
+    res.send('App is running!');
 });
 
 // Health check with database verification
@@ -28,6 +28,11 @@ app.get('/health', async (req, res) => {
             error: error.message 
         });
     }
+});
+
+// Root endpoint for healthcheck
+app.get('/', (req, res) => {
+    res.send('App is running!');
 });
 
 // Middleware setup

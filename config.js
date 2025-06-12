@@ -2,11 +2,11 @@ require('dotenv').config();
 
 const config = {
     db: {
-        host: process.env.DB_HOST || process.env.MYSQLHOST,
-        user: process.env.DB_USER || process.env.MYSQLUSER || 'root',
-        password: process.env.DB_PASSWORD || process.env.MYSQLPASSWORD,
-        database: process.env.DB_NAME || process.env.MYSQLDATABASE || 'railway',
-        port: parseInt(process.env.DB_PORT || process.env.MYSQLPORT)
+        host: process.env.MYSQLHOST,
+        user: process.env.MYSQLUSER || 'root',
+        password: process.env.MYSQLPASSWORD,
+        database: process.env.MYSQLDATABASE || 'railway',
+        port: parseInt(process.env.MYSQLPORT || "3306")
     },
     auth: {
         user: process.env.EMAIL_USER || 'ixlsrlq4oh6bknc6@ethereal.email',
@@ -15,7 +15,7 @@ const config = {
     },
     app: {
         sessionSecret: process.env.SESSION_SECRET || 'your_secure_session_secret',
-        port: process.env.PORT || 3000,
+        port: process.env.PORT || 8080,
         environment: process.env.NODE_ENV || 'development'
     }
 };
