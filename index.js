@@ -81,22 +81,55 @@ app.use('/', userRoutes);
 app.use('/admin', adminRoutes);
 app.use('/auth', authRoutes);
 
-// Health check route with database check
+// Health check route with database check and environment validation
 app.get('/health', async (req, res) => {
+    const checkResult = {
+        status: 'ok',
+        timestamp: new Date(),
+        checks: {
+            environment: {
+                status: 'ok',
+                missing: []
+            },
+            database: {
+                status: 'pending'
+            }
+        }
+    };
+
+    // Check required environment variables
+    const requiredEnvVars = ['MYSQLHOST', 'MYSQLPORT', 'MYSQLUSER', 'MYSQLPASSWORD', 'MYSQLDATABASE'];
+    const missingEnvVars = requiredEnvVars.filter(varName => !process.env[varName]);
+    
+    if (missingEnvVars.length > 0) {
+        checkResult.checks.environment.status = 'error';
+        checkResult.checks.environment.missing = missingEnvVars;
+        checkResult.status = 'error';
+        return res.status(503).json(checkResult);
+    }
+
+    // Check database connection
     try {
         await sequelize.authenticate();
-        res.status(200).json({ 
+        checkResult.checks.database = {
             status: 'ok',
-            timestamp: new Date(),
-            database: 'connected'
-        });
+            host: process.env.MYSQLHOST,
+            port: process.env.MYSQLPORT,
+            database: process.env.MYSQLDATABASE
+        };
     } catch (error) {
-        res.status(503).json({ 
+        checkResult.status = 'error';
+        checkResult.checks.database = {
             status: 'error',
-            message: 'Database connection failed',
-            timestamp: new Date()
-        });
+            message: error.message,
+            host: process.env.MYSQLHOST,
+            port: process.env.MYSQLPORT,
+            database: process.env.MYSQLDATABASE
+        };
+        return res.status(503).json(checkResult);
     }
+
+    res.status(200).json(checkResult);
 });
 
 // Error handling middleware (must be after routes)
