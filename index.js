@@ -11,9 +11,17 @@ const { logger } = require('./helpers/logger');
 const config = require('./config');
 const { sequelize } = require('./models');
 
-// Basic health check that doesn't require database
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'ok',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Root endpoint
 app.get('/', (req, res) => {
-    res.send('App is running!');
+  res.send('App is running!');
 });
 
 // Health check with database verification
@@ -31,11 +39,6 @@ app.get('/health', async (req, res) => {
             error: error.message 
         });
     }
-});
-
-// Root endpoint for healthcheck
-app.get('/', (req, res) => {
-    res.send('App is running!');
 });
 
 // Middleware setup

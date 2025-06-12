@@ -73,27 +73,31 @@ async function startApplication() {
     try {
         logger.info('Starting application...');
         
-        // Wait for database
-        await waitForDatabase();
-        
-        // Run migrations
-        await runMigrations();
-        
-        // Start the application
+        // Start the application first
         const app = require('./index');
-        
-        // Veritabanı bağlantısını kontrol et
-        await waitForDatabase();
-        logger.info('Database connection successful');
-
-        // Uygulama portunu ayarla
         const PORT = process.env.PORT || 8080;
         
-        // Sunucuyu başlat
+        // Start the server
         const server = app.listen(PORT, () => {
             logger.info(`Server running on port ${PORT}`);
             logger.info(`Environment: ${process.env.NODE_ENV}`);
         });
+
+        // Handle database connection and migrations in the background
+        (async () => {
+            try {
+                // Wait for database
+                await waitForDatabase();
+                
+                // Run migrations
+                await runMigrations();
+                
+                logger.info('Database connection and migrations completed successfully');
+            } catch (error) {
+                logger.error('Database operations failed:', error);
+                // Don't exit the process, just log the error
+            }
+        })();
 
         // Graceful shutdown
         process.on('SIGTERM', () => {
