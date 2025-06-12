@@ -81,9 +81,22 @@ app.use('/', userRoutes);
 app.use('/admin', adminRoutes);
 app.use('/auth', authRoutes);
 
-// Health check route
-app.get('/health', (req, res) => {
-    res.status(200).json({ status: 'ok' });
+// Health check route with database check
+app.get('/health', async (req, res) => {
+    try {
+        await sequelize.authenticate();
+        res.status(200).json({ 
+            status: 'ok',
+            timestamp: new Date(),
+            database: 'connected'
+        });
+    } catch (error) {
+        res.status(503).json({ 
+            status: 'error',
+            message: 'Database connection failed',
+            timestamp: new Date()
+        });
+    }
 });
 
 // Error handling middleware (must be after routes)
@@ -131,123 +144,42 @@ const syncDatabase = async (retries = 3) => {
     }
 };
 
+// Startup process
 const startup = async () => {
     try {
         const PORT = process.env.PORT || 8080;
-        await sequelize.authenticate();
         
+        // Check database connection
+        await sequelize.authenticate();
+        logger.info('Database connection established');
+        
+        // Sync database in production without force
         if (process.env.NODE_ENV === 'production') {
             await sequelize.sync({ force: false });
+            logger.info('Database synced in production mode');
         }
         
+        // Start server
         app.listen(PORT, () => {
-            console.log(`Server running on port ${PORT}`);
-        });
-    } catch (error) {
-        console.error('Startup failed:', error);
-        process.exit(1);
-    }
-};
-
-// Sunucuyu başlat
-(async () => {
-    try {
-        if (process.env.NODE_ENV === 'production') {
-            await startup();
-        } else {
-            await syncDatabase();
-        }
-        
-        const PORT = process.env.PORT || 8080; // Railway için varsayılan port 8080
-        const server = app.listen(PORT, () => {
-            logger.info(`Server is running on port ${PORT}`);
+            logger.info(`Server running on port ${PORT}`);
             logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
         });
-        
-        server.on('error', (err) => {
-            if (err.code === 'EADDRINUSE') {
-                logger.error(`Port ${PORT} is already in use. Trying port ${PORT + 1}...`);
-                const alternativeServer = app.listen(PORT + 1, () => {
-                    logger.info(`Server is running on port ${PORT + 1}`);
-                });
-            } else {
-                logger.error('Server error:', { error: err.message, stack: err.stack });
-            }
-        });
     } catch (error) {
-        logger.error('Failed to start server:', { error: error.message, stack: error.stack });
-        process.exit(1);
-    }
-})();
-
-// Uncaught error handler
-process.on('uncaughtException', (err) => {
-    console.error('Uncaught Exception:', err);
-    // Kritik hatada temiz bir şekilde kapat
-    process.exit(1);
-});
-
-process.on('unhandledRejection', (err) => {
-    console.error('Unhandled Rejection:', err);
-    // Kritik hatada temiz bir şekilde kapat
-    process.exit(1);
-});
-
-// Database bağlantısını bekle
-const sequelize = require('./data/db');
-let server;
-
-const startServer = async () => {
-    try {
-        // Veritabanı bağlantısını kontrol et
-        await sequelize.authenticate();
-        console.log('Database connection is ready');
-
-        // ... existing middleware setups ...
-
-        const PORT = process.env.PORT || 8080;
-        server = app.listen(PORT, () => {
-            console.log(`Server is running on port ${PORT}`);
-        });
-
-        // Graceful shutdown
-        process.on('SIGTERM', () => {
-            console.log('SIGTERM received. Shutting down gracefully...');
-            shutdown();
-        });
-
-        process.on('SIGINT', () => {
-            console.log('SIGINT received. Shutting down gracefully...');
-            shutdown();
-        });
-
-    } catch (error) {
-        console.error('Unable to start server:', error);
+        logger.error('Startup failed:', error);
         process.exit(1);
     }
 };
 
-const shutdown = async () => {
-    try {
-        console.log('Starting graceful shutdown...');
-        
-        // HTTP sunucusunu kapat
-        if (server) {
-            await new Promise((resolve) => {
-                server.close(resolve);
-            });
-            console.log('HTTP server closed');
-        }
+// Handle uncaught errors
+process.on('uncaughtException', (error) => {
+    logger.error('Uncaught Exception:', error);
+    process.exit(1);
+});
 
-        // Veritabanı bağlantısını kapat
-        await sequelize.close();
-        console.log('Database connection closed');
+process.on('unhandledRejection', (error) => {
+    logger.error('Unhandled Rejection:', error);
+    process.exit(1);
+});
 
-        process.exit(0);
-    } catch (err) {
-        console.error('Error during shutdown:', err);
-        process.exit(1);
-    }
-};
-
-startServer();
+// Start the application
+startup();
