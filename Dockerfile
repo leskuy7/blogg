@@ -38,10 +38,9 @@ exec "$@"\n' > /wait-for && chmod +x /wait-for
 
 ENV NODE_ENV=production
 
-# Improved healthcheck configuration
+EXPOSE 8080
+
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD wget --quiet --tries=1 --spider http://localhost:8080/health || exit 1
-
-EXPOSE ${PORT}
 
 CMD ["sh", "-c", "/wait-for && node deploy-startup.js"]
