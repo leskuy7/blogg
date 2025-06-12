@@ -11,7 +11,17 @@ const { logDatabase } = require('../helpers/logger');
 const db = {};
 
 let sequelize;
-if (process.env.MYSQL_URL) {
+if (process.env.NODE_ENV === 'production') {
+  sequelize = new Sequelize(process.env.MYSQL_URL, {
+    dialect: 'mysql',
+    dialectOptions: {
+      ssl: {
+        rejectUnauthorized: false
+      }
+    },
+    logging: false
+  });
+} else if (process.env.MYSQL_URL) {
   sequelize = new Sequelize(process.env.MYSQL_URL, {
     ...config,
     dialectOptions: {
