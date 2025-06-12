@@ -203,6 +203,11 @@ const startup = async () => {
     try {
         const PORT = process.env.PORT || 8080;
         
+        // Add quick health route for initial check
+        app.get('/', (req, res) => {
+            res.send('OK');
+        });
+
         // Check database connection
         await sequelize.authenticate();
         logger.info('Database connection established');
@@ -217,6 +222,8 @@ const startup = async () => {
         app.listen(PORT, () => {
             logger.info(`Server running on port ${PORT}`);
             logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
+            logger.info(`Database host: ${process.env.MYSQLHOST}`);
+            logger.info(`Database port: ${process.env.MYSQLPORT}`);
         });
     } catch (error) {
         logger.error('Startup failed:', error);
