@@ -44,4 +44,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
 
 EXPOSE ${PORT}
 
-CMD ["sh", "-c", "/wait-for && node index.js"]
+CMD ["sh", "-c", "/wait-for && node deploy-startup.js"]

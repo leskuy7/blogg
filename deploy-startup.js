@@ -22,6 +22,13 @@ const MAX_RETRIES = 3;  // 5'ten 3'e düşürelim
 const RETRY_DELAY = 3000;  // 5000'den 3000'e düşürelim
 
 async function waitForDatabase(retries = MAX_RETRIES) {
+    logger.info('Database connection parameters:', {
+        host: process.env.MYSQLHOST,
+        port: process.env.MYSQLPORT,
+        database: process.env.MYSQLDATABASE,
+        user: process.env.MYSQLUSER
+    });
+
     for (let i = 0; i < retries; i++) {
         try {
             logger.info(`Database connection attempt ${i + 1}/${retries}`);
@@ -29,7 +36,7 @@ async function waitForDatabase(retries = MAX_RETRIES) {
             logger.info('Database connection has been established successfully.');
             return true;
         } catch (error) {
-            logger.error('Unable to connect to the database:', error);
+            logger.error('Unable to connect to the database:', error.message);
             if (i < retries - 1) {
                 logger.info(`Retrying in ${RETRY_DELAY/1000} seconds...`);
                 await new Promise(resolve => setTimeout(resolve, RETRY_DELAY));
