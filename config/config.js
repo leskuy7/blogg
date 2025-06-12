@@ -27,15 +27,17 @@ const config = {
         ssl: {
           rejectUnauthorized: false
         },
-        connectTimeout: 60000
+        connectTimeout: 120000,
+        acquireTimeout: 120000,
+        timeout: 120000
       },
       pool: {
         max: 5,
         min: 0,
-        acquire: 60000,
+        acquire: 120000,
         idle: 10000
       },
-      logging: false
+      logging: (msg) => logger.info(msg)
     }
   },
   auth: {

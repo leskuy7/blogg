@@ -26,7 +26,8 @@ async function waitForDatabase(retries = MAX_RETRIES) {
         host: process.env.MYSQLHOST,
         port: process.env.MYSQLPORT,
         database: process.env.MYSQLDATABASE,
-        user: process.env.MYSQLUSER
+        user: process.env.MYSQLUSER,
+        url: process.env.MYSQL_URL
     });
 
     logger.info('Retry settings:', {
@@ -37,6 +38,21 @@ async function waitForDatabase(retries = MAX_RETRIES) {
     for (let i = 0; i < retries; i++) {
         try {
             logger.info(`Database connection attempt ${i + 1}/${retries}`);
+            
+            // Test the connection using netcat first
+            await new Promise((resolve, reject) => {
+                exec(`nc -zv ${process.env.MYSQLHOST} ${process.env.MYSQLPORT}`, (error, stdout, stderr) => {
+                    if (error) {
+                        logger.error('Netcat connection test failed:', error);
+                        reject(error);
+                    } else {
+                        logger.info('Netcat connection test successful');
+                        resolve();
+                    }
+                });
+            });
+
+            // Then try Sequelize connection
             await sequelize.authenticate();
             logger.info('Database connection has been established successfully.');
             return true;
