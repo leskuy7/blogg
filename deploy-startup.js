@@ -18,8 +18,8 @@ const { exec } = require('child_process');
 const util = require('util');
 const execPromise = util.promisify(exec);
 
-const MAX_RETRIES = 3;  // 5'ten 3'e düşürelim
-const RETRY_DELAY = 3000;  // 5000'den 3000'e düşürelim
+const MAX_RETRIES = 10;  // Retry attempts increased to 10
+const RETRY_DELAY = 7000;  // Retry delay increased to 7000ms
 
 async function waitForDatabase(retries = MAX_RETRIES) {
     logger.info('Database connection parameters:', {
@@ -27,6 +27,11 @@ async function waitForDatabase(retries = MAX_RETRIES) {
         port: process.env.MYSQLPORT,
         database: process.env.MYSQLDATABASE,
         user: process.env.MYSQLUSER
+    });
+
+    logger.info('Retry settings:', {
+        maxRetries: MAX_RETRIES,
+        retryDelay: RETRY_DELAY
     });
 
     for (let i = 0; i < retries; i++) {

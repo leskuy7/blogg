@@ -19,9 +19,12 @@ app.get('/', (req, res) => {
 // Health check with database verification
 app.get('/health', async (req, res) => {
     try {
-        await sequelize.authenticate();
-        res.json({ status: 'ok', message: 'Service is healthy' });
+        logger.info('Health check initiated');
+        const dbStatus = await sequelize.authenticate();
+        logger.info('Database connection successful during health check');
+        res.json({ status: 'ok', message: 'Service is healthy', dbStatus });
     } catch (error) {
+        logger.error('Health check failed:', error);
         res.status(503).json({ 
             status: 'error', 
             message: 'Database connection failed',

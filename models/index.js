@@ -35,14 +35,13 @@ sequelize.authenticate()
       dialect: config.dialect,
       environment: env
     });
+    console.log('Database connection established successfully');
   })
   .catch(err => {
     logDatabase('error', 'Unable to connect to the database', {
-      error: err.message,
-      database: config.database,
-      host: config.host,
-      environment: env
+      error: err.message
     });
+    console.error('Unable to connect to the database:', err.message);
   });
 
 fs
