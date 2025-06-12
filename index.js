@@ -10,6 +10,8 @@ const cookieParser = require('cookie-parser');
 const { logger } = require('./helpers/logger');
 const config = require('./config');
 const { sequelize } = require('./models');
+const { flashMessages, stripTags, currentPath } = require('./middlewares/all');
+const locals = require('./middlewares/locals');
 
 // Health check endpoint
 app.get('/health', (req, res) => {
@@ -65,6 +67,10 @@ app.use(session({
 }));
 
 app.use(flash());
+app.use(flashMessages);
+app.use(stripTags);
+app.use(currentPath);
+app.use(locals);
 
 // Routes
 const userRoutes = require('./routes/user');
