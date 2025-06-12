@@ -93,13 +93,27 @@ app.get('/health', async (req, res) => {
             },
             database: {
                 status: 'pending'
+            },
+            system: {
+                uptime: process.uptime(),
+                memory: process.memoryUsage(),
+                nodeVersion: process.version
             }
         }
     };
 
-    // Check required environment variables
-    const requiredEnvVars = ['MYSQLHOST', 'MYSQLPORT', 'MYSQLUSER', 'MYSQLPASSWORD', 'MYSQLDATABASE'];
-    const missingEnvVars = requiredEnvVars.filter(varName => !process.env[varName]);
+    // Check required environment variables - accept either Railway or custom vars
+    const requiredEnvVars = [
+        ['MYSQLHOST', 'DB_HOST'],
+        ['MYSQLPORT', 'DB_PORT'],
+        ['MYSQLUSER', 'DB_USER'],
+        ['MYSQLPASSWORD', 'DB_PASSWORD'],
+        ['MYSQLDATABASE', 'DB_NAME']
+    ];
+
+    const missingEnvVars = requiredEnvVars.filter(([railway, custom]) => 
+        !process.env[railway] && !process.env[custom]
+    ).map(([railway]) => railway);
     
     if (missingEnvVars.length > 0) {
         checkResult.checks.environment.status = 'error';

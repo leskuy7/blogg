@@ -8,40 +8,29 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
+# Install dependencies with specific flags for production
 RUN npm ci --only=production
 
 # Copy application files
 COPY . .
 
-# Create wait-for script
-RUN echo '#!/bin/sh\n\
-max_attempts=30\n\
-attempt=1\n\
-echo "Waiting for MySQL..."\n\
-while [ $attempt -le $max_attempts ]; do\n\
-    if nc -z -w5 ${MYSQLHOST} ${MYSQLPORT}; then\n\
-        echo "MySQL is ready!"\n\
-        exec "$@"\n\
-        exit 0\n\
-    fi\n\
-    attempt=$((attempt + 1))\n\
-    echo "Attempt $attempt/$max_attempts: MySQL is not ready yet..."\n\
-    sleep 2\n\
+# Create improved wait-for script
+RUN printf '#!/bin/sh\n\
+: "${MYSQLHOST:?need MYSQLHOST}"\n\
+: "${MYSQLPORT:?need MYSQLPORT}"\n\
+max=30; i=1\n\
+while ! nc -z $MYSQLHOST $MYSQLPORT; do\n\
+  echo "waiting for mysql $i/$max"; i=$((i+1)); [ $i -gt $max ] && exit 1; sleep 2\n\
 done\n\
-echo "Could not connect to MySQL after $max_attempts attempts"\n\
-exit 1' > /wait-for && chmod +x /wait-for
+exec "$@"\n' > /wait-for && chmod +x /wait-for
 
-# Environment variables
 ENV NODE_ENV=production \
     PORT=8080
 
-# Expose port
-EXPOSE 8080
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+# Improved healthcheck configuration
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD wget --quiet --tries=1 --spider http://localhost:8080/health || exit 1
 
-# Start with wait-for script
-CMD ["/bin/sh", "-c", "/wait-for node deploy-startup.js"]
+EXPOSE ${PORT}
+
+CMD ["sh", "-c", "/wait-for && node index.js"]
