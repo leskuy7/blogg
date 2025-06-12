@@ -11,30 +11,29 @@ const { logDatabase } = require('../helpers/logger');
 const db = {};
 
 let sequelize;
-if (process.env.NODE_ENV === 'production') {
-  sequelize = new Sequelize(process.env.MYSQL_URL, {
+sequelize = new Sequelize(
+  process.env.MYSQLDATABASE,
+  process.env.MYSQLUSER,
+  process.env.MYSQLPASSWORD,
+  {
+    host: process.env.MYSQLHOST,
+    port: parseInt(process.env.MYSQLPORT),
     dialect: 'mysql',
     dialectOptions: {
       ssl: {
         rejectUnauthorized: false
-      }
+      },
+      connectTimeout: 60000
+    },
+    pool: {
+      max: 5,
+      min: 0,
+      acquire: 60000,
+      idle: 10000
     },
     logging: false
-  });
-} else if (process.env.MYSQL_URL) {
-  sequelize = new Sequelize(process.env.MYSQL_URL, {
-    ...config,
-    dialectOptions: {
-      ssl: {
-        rejectUnauthorized: false
-      }
-    }
-  });
-} else if (config.use_env_variable) {
-  sequelize = new Sequelize(process.env[config.use_env_variable], config);
-} else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config);
-}
+  }
+);
 
 // Veritabanı bağlantı logları
 sequelize.authenticate()

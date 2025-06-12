@@ -18,9 +18,12 @@ module.exports = {
     port: parseInt(process.env.MYSQLPORT) || 3306,
     dialect: "mysql",
     logging: false
-  },
-  production: {
-    use_env_variable: "MYSQL_URL",
+  },  production: {
+    username: process.env.MYSQLUSER,
+    password: process.env.MYSQLPASSWORD,
+    database: process.env.MYSQLDATABASE,
+    host: process.env.MYSQLHOST,
+    port: parseInt(process.env.MYSQLPORT),
     dialect: "mysql",
     dialectOptions: {
       ssl: {
