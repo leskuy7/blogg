@@ -1,4 +1,5 @@
 require('dotenv').config();
+console.log("deploy-startup.js is starting...");
 const { logger } = require('./helpers/logger');
 
 // Uncaught exception handler
