@@ -14,12 +14,11 @@ const { flashMessages, stripTags, currentPath } = require('./middlewares/all');
 const locals = require('./middlewares/locals');
 const userController = require('./controllers/user');
 
+// Explicitly register EJS as the view engine
+app.engine('ejs', require('ejs').__express);
 app.set('view engine', 'ejs');
 // Set views directory using an absolute path to be robust in Docker
 app.set('views', process.env.NODE_ENV === 'production' ? '/app/views' : path.join(__dirname, 'views'));
-
-// Ana sayfa rotası
-app.get('/', userController.getHome);
 
 // Health check with database verification
 app.get('/health', async (req, res) => {
