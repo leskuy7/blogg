@@ -5,6 +5,9 @@ WORKDIR /app
 # Install system dependencies
 RUN apk add --no-cache netcat-openbsd wget
 
+# Verify node path (for debugging)
+RUN which node
+
 # Copy package files
 COPY package*.json ./
 
@@ -23,5 +26,5 @@ EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD wget --quiet --tries=1 --spider http://localhost:8080/health || exit 1
 
-# Direct node command
-CMD node deploy-startup.js
+# Explicit node command via sh -c for better logging and execution
+CMD ["sh", "-c", "node deploy-startup.js"]
