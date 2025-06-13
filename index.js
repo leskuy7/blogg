@@ -24,11 +24,6 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Root endpoint
-app.get('/', (req, res) => {
-  res.send('App is running!');
-});
-
 // Health check with database verification
 app.get('/health', async (req, res) => {
     try {
@@ -44,6 +39,11 @@ app.get('/health', async (req, res) => {
             error: error.message 
         });
     }
+});
+
+// Root endpoint
+app.get('/', (req, res) => {
+  res.send('App is running!');
 });
 
 // Middleware setup
@@ -90,32 +90,5 @@ app.use((err, req, res, next) => {
     res.status(500).send('Internal Server Error');
 });
 
-// Start server
-const PORT = process.env.PORT || 8080;
-
-const startup = async () => {
-    try {
-        await sequelize.authenticate();
-        logger.info('Database connection established');
-        
-        if (process.env.NODE_ENV === 'production') {
-            await sequelize.sync({ force: false });
-            logger.info('Database synced in production mode');
-        }
-        
-        app.set('view engine', 'ejs');
-        app.set('views', path.join(__dirname, 'views'));
-        
-        app.listen(PORT, () => {
-            logger.info(`Server running on port ${PORT}`);
-            logger.info(`Environment: ${process.env.NODE_ENV}`);
-            logger.info(`Database host: ${process.env.MYSQLHOST}`);
-            logger.info(`Database port: ${process.env.MYSQLPORT}`);
-        });
-    } catch (error) {
-        logger.error('Startup failed:', error);
-        process.exit(1);
-    }
-};
-
-startup();
+// Export the app for deploy-startup.js to use
+module.exports = app;

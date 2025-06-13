@@ -8,7 +8,6 @@ exports.getHome = async (req, res) => {
             userId: req.session.user ? req.session.user.userId : null,
             isAuthenticated: !!req.session.isAuth
         });
-
         const blogs = await Blog.findAll({
             where: { anasayfa: true, onay: true },
             include: [{ 
