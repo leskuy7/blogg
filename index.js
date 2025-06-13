@@ -15,7 +15,8 @@ const locals = require('./middlewares/locals');
 const userController = require('./controllers/user');
 
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+// Set views directory using an absolute path to be robust in Docker
+app.set('views', process.env.NODE_ENV === 'production' ? '/app/views' : path.join(__dirname, 'views'));
 
 // Ana sayfa rotası
 app.get('/', userController.getHome);
