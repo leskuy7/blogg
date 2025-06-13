@@ -2,6 +2,9 @@ FROM node:20.11.1-alpine
 
 WORKDIR /app
 
+# Install system dependencies
+RUN apk add --no-cache netcat-openbsd wget
+
 # Copy package files
 COPY package*.json ./
 
