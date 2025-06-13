@@ -50,9 +50,8 @@ app.get('/', (req, res) => {
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 app.use(cookieParser());
-app.use(csurf({ cookie: true }));
 
-// Session setup
+// Session setup - Moved before csurf
 const sessionStore = new sequelizeStore({
     db: sequelize,
     tableName: 'Sessions'
@@ -69,6 +68,7 @@ app.use(session({
     }
 }));
 
+app.use(csurf({ cookie: true }));
 app.use(flash());
 app.use(flashMessages);
 app.use(stripTags);
