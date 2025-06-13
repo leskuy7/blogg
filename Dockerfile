@@ -14,6 +14,9 @@ RUN npm ci --only=production
 # Copy application files
 COPY . .
 
+# Make start script executable
+RUN chmod +x start.sh
+
 ENV NODE_ENV=production
 ENV PORT=8080
 
@@ -23,4 +26,8 @@ EXPOSE 8080
 HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=3 \
     CMD wget --quiet --tries=1 --spider http://localhost:8080/health || exit 1
 
-CMD ["node", "deploy-startup.js"]
+# Debug: List contents of /app
+RUN ls -la /app
+
+# Use the start script
+CMD ["./start.sh"]
