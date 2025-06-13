@@ -42,9 +42,9 @@ app.get('/health', async (req, res) => {
 });
 
 // Root endpoint
-app.get('/', (req, res) => {
-  res.send('App is running!');
-});
+// app.get('/', (req, res) => {
+//   res.send('App is running!');
+// });
 
 // Middleware setup
 app.use(express.urlencoded({ extended: true }));
