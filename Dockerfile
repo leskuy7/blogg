@@ -1,7 +1,7 @@
-FROM node:20-alpine
+FROM node:20.11.1-alpine
 
 # Install dependencies for wait-for script
-RUN apk add --no-cache netcat-openbsd
+RUN apk add --no-cache netcat-openbsd wget
 
 WORKDIR /app
 
@@ -37,10 +37,12 @@ echo "MySQL is ready!"\n\
 exec "$@"\n' > /wait-for && chmod +x /wait-for
 
 ENV NODE_ENV=production
+ENV PORT=8080
 
 EXPOSE 8080
 
-HEALTHCHECK --interval=30s --timeout=30s --start-period=120s --retries=5 \
+# More frequent health checks during startup
+HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=3 \
     CMD wget --quiet --tries=1 --spider http://localhost:8080/health || exit 1
 
 CMD ["sh", "-c", "/wait-for && node deploy-startup.js"]
