@@ -2,8 +2,8 @@ FROM node:20.11.1-alpine
 
 WORKDIR /app
 
-# Install system dependencies
-RUN apk add --no-cache netcat-openbsd wget
+# Install system dependencies (including build tools for native modules)
+RUN apk add --no-cache netcat-openbsd wget python3 build-base
 
 # Verify node path (for debugging)
 RUN which node
@@ -12,7 +12,7 @@ RUN which node
 COPY package*.json ./
 
 # Install dependencies
-RUN npm ci
+RUN npm ci --omit=dev # Only production dependencies on Alpine
 
 # Copy application files
 COPY . .
