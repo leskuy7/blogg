@@ -86,8 +86,8 @@ app.use('/auth', authRoutes);
 
 // Error handlers
 app.use((err, req, res, next) => {
-    logger.error('Error:', err);
-    res.status(500).send('Internal Server Error');
+    console.error('Express error:', err);
+    res.status(500).send(`<pre>${err.message}\n\n${err.stack}</pre>`);
 });
 
 // Export the app for deploy-startup.js to use
