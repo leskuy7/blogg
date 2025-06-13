@@ -12,17 +12,13 @@ const config = require('./config');
 const { sequelize } = require('./models');
 const { flashMessages, stripTags, currentPath } = require('./middlewares/all');
 const locals = require('./middlewares/locals');
+const userController = require('./controllers/user');
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.status(200).json({ 
-    status: 'ok',
-    timestamp: new Date().toISOString()
-  });
-});
+// Ana sayfa rotası
+app.get('/', userController.getHome);
 
 // Health check with database verification
 app.get('/health', async (req, res) => {
@@ -33,18 +29,13 @@ app.get('/health', async (req, res) => {
         res.json({ status: 'ok', message: 'Service is healthy', dbStatus });
     } catch (error) {
         logger.error('Health check failed:', error);
-        res.status(503).json({ 
-            status: 'error', 
+        res.status(503).json({
+            status: 'error',
             message: 'Database connection failed',
-            error: error.message 
+            error: error.message
         });
     }
 });
-
-// Root endpoint
-// app.get('/', (req, res) => {
-//   res.send('App is running!');
-// });
 
 // Middleware setup
 app.use(express.urlencoded({ extended: true }));
