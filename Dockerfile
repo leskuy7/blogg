@@ -1,33 +1,24 @@
 FROM node:20.11.1-alpine
 
-# Install dependencies for health check
-RUN apk add --no-cache netcat-openbsd wget
-
 WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies with specific flags for production
-RUN npm ci --only=production
+# Install dependencies
+RUN npm ci
 
 # Copy application files
 COPY . .
-
-# Make start script executable
-RUN chmod +x start.sh
 
 ENV NODE_ENV=production
 ENV PORT=8080
 
 EXPOSE 8080
 
-# More frequent health checks during startup
-HEALTHCHECK --interval=10s --timeout=5s --start-period=30s --retries=3 \
+# Simple health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD wget --quiet --tries=1 --spider http://localhost:8080/health || exit 1
 
-# Debug: List contents of /app
-RUN ls -la /app
-
-# Use the start script
-CMD ["./start.sh"]
+# Direct node command
+CMD node deploy-startup.js
