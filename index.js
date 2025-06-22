@@ -11,7 +11,6 @@ const { logger } = require('./helpers/logger');
 const config = require('./config');
 const { sequelize } = require('./models');
 
-// Set view engine and views directory BEFORE any routes or middleware
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 

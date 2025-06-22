@@ -86,54 +86,25 @@ exports.getBlogBySlug = async (req, res) => {
 
 exports.getAllBlogs = async (req, res) => {
     try {
-        const page = parseInt(req.query.page) || 1;
-        const limit = 3;
-        const offset = (page - 1) * limit;
-
-        logBusiness('info', 'All blogs page accessed', {
-            userId: req.session.user ? req.session.user.userId : null,
-            page,
-            isAuthenticated: !!req.session.isAuth
-        });
-
-        const { count, rows: blogs } = await Blog.findAndCountAll({
-            where: { onay: true },
+        const blogs = await Blog.findAll({
             include: [{
                 model: Category,
-                as: 'Categories', // Ensure we use the correct association alias
-                through: { attributes: [] } // Don't include junction table data
-            }],
-            limit: limit,
-            offset: offset,
-            distinct: true, // Important to get correct count with associations
-            order: [['blogId', 'DESC']] // Order by most recent
+                as: 'Categories',
+                through: { attributes: [] }
+            }]
         });
-
         const categories = await Category.findAll();
-        const totalPages = Math.ceil(count / limit) || 1;
-
-        if (page > totalPages) {
-            return res.status(404).send("Sayfa bulunamadı.");
-        }
-
         res.render('users/blogs', {
-            title: "Blog Listesi",
+            title: "Tüm Bloglar",
             blogs: blogs,
             categories: categories,
-            totalPages: totalPages,
-            currentPage: page,
             selectedCategory: null,
-            activePage: 'blogs',
-            isAuth: req.session.isAuth,
-            stripTags: striptags
+            totalPages: 1,
+            currentPage: 1,
+            isAuth: req.session.isAuth
         });
     } catch (err) {
-        logger.error("Blog listesi yükleme hatası:", { 
-            error: err.message, 
-            stack: err.stack,
-            page: req.query.page,
-            userId: req.session.user ? req.session.user.userId : null
-        });
+        logger.error("Tüm bloglar yüklenemedi:", { error: err.message, stack: err.stack });
         res.status(500).send("Bir hata oluştu: " + err.message);
     }
 };

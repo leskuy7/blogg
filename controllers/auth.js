@@ -17,7 +17,8 @@ exports.get_register = async function (req, res) {
             message: message, // Mesajı şablona gönder
             formData: req.session.formData || {}, // Form verilerini şablona gönder
             csrfToken: req.csrfToken() // CSRF token'ı şablona gönder
-        });    } catch (err) {
+        });    
+    } catch (err) {
         logger.error('Registration page error', { error: err.message, stack: err.stack });
         res.status(500).send("Bir hata oluştu: " + err.message);
     }
