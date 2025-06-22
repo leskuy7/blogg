@@ -15,21 +15,8 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 // Health check endpoint (DB'ye dokunmadan)
-app.get('/health', async (req, res) => {
-    try {
-        await sequelize.authenticate();
-        res.json({
-            status: 'ok',
-            message: 'Service is healthy',
-            timestamp: new Date().toISOString()
-        });
-    } catch (error) {
-        res.status(503).json({
-            status: 'error',
-            message: 'Database connection failed',
-            error: error.message
-        });
-    }
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
 });
 
 // Root endpoint
