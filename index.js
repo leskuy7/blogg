@@ -14,25 +14,13 @@ const { sequelize } = require('./models');
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Health check endpoint (tek bir tane olsun)
-app.get('/health', async (req, res) => {
-    try {
-        logger.info('Health check initiated');
-        await sequelize.authenticate();
-        logger.info('Database connection successful during health check');
-        res.json({ 
-            status: 'ok', 
-            message: 'Service is healthy', 
-            timestamp: new Date().toISOString() 
-        });
-    } catch (error) {
-        logger.error('Health check failed:', error);
-        res.status(503).json({ 
-            status: 'error', 
-            message: 'Database connection failed',
-            error: error.message 
-        });
-    }
+// Health check endpoint (DB'ye dokunmadan)
+app.get('/health', (req, res) => {
+    res.json({
+        status: 'ok',
+        message: 'Service is healthy',
+        timestamp: new Date().toISOString()
+    });
 });
 
 // Root endpoint
