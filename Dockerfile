@@ -22,3 +22,6 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 # wait-for script’i önce çalıştır
 ENTRYPOINT ["/wait-for"]
 CMD ["node", "index.js"]
+
+
+# deneme için
