@@ -6,34 +6,16 @@ const Sequelize = require('sequelize');
 const process = require('process');
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../config/config.js')[env];
+const config = require('../config').db[env];
 const { logDatabase } = require('../helpers/logger');
 const db = {};
 
 let sequelize;
-sequelize = new Sequelize(
-  process.env.MYSQLDATABASE,
-  process.env.MYSQLUSER,
-  process.env.MYSQLPASSWORD,
-  {
-    host: process.env.MYSQLHOST,
-    port: parseInt(process.env.MYSQLPORT),
-    dialect: 'mysql',
-    dialectOptions: {
-      ssl: {
-        rejectUnauthorized: false
-      },
-      connectTimeout: 60000
-    },
-    pool: {
-      max: 5,
-      min: 0,
-      acquire: 60000,
-      idle: 10000
-    },
-    logging: false
-  }
-);
+if (env === 'production' && process.env.MYSQL_URL) {
+  sequelize = new Sequelize(process.env.MYSQL_URL, config);
+} else {
+  sequelize = new Sequelize(config.database, config.username, config.password, config);
+}
 
 // Veritabanı bağlantı logları
 sequelize.authenticate()

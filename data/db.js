@@ -1,12 +1,14 @@
 const { Sequelize } = require('sequelize');
 const config = require('../config');
 
-let sequelize;
+const env = process.env.NODE_ENV || 'development';
+const dbConfig = config.db[env];
 
-if (process.env.NODE_ENV === 'production') {
-    sequelize = new Sequelize(process.env.MYSQL_URL, config.db.production);
+let sequelize;
+if (env === 'production' && process.env.MYSQL_URL) {
+    sequelize = new Sequelize(process.env.MYSQL_URL, dbConfig);
 } else {
-    sequelize = new Sequelize(config.db.development);
+    sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, dbConfig);
 }
 
 module.exports = sequelize;
