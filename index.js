@@ -14,26 +14,17 @@ const { sequelize } = require('./models');
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.status(200).json({ 
-    status: 'ok',
-    timestamp: new Date().toISOString()
-  });
-});
-
-// Root endpoint
-app.get('/', (req, res) => {
-  res.redirect('/blogs');
-});
-
-// Health check with database verification
+// Health check endpoint (tek bir tane olsun)
 app.get('/health', async (req, res) => {
     try {
         logger.info('Health check initiated');
-        const dbStatus = await sequelize.authenticate();
+        await sequelize.authenticate();
         logger.info('Database connection successful during health check');
-        res.json({ status: 'ok', message: 'Service is healthy', dbStatus });
+        res.json({ 
+            status: 'ok', 
+            message: 'Service is healthy', 
+            timestamp: new Date().toISOString() 
+        });
     } catch (error) {
         logger.error('Health check failed:', error);
         res.status(503).json({ 
@@ -42,6 +33,11 @@ app.get('/health', async (req, res) => {
             error: error.message 
         });
     }
+});
+
+// Root endpoint
+app.get('/', (req, res) => {
+  res.redirect('/blogs');
 });
 
 // Middleware setup
