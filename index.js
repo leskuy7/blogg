@@ -11,6 +11,10 @@ const { logger } = require('./helpers/logger');
 const config = require('./config');
 const { sequelize } = require('./models');
 
+// Set view engine and views directory BEFORE any routes or middleware
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({ 
@@ -93,9 +97,6 @@ const startup = async () => {
             await sequelize.sync({ force: false });
             logger.info('Database synced in production mode');
         }
-        
-        app.set('view engine', 'ejs');
-        app.set('views', path.join(__dirname, 'views'));
         
         app.listen(PORT, () => {
             logger.info(`Server running on port ${PORT}`);
