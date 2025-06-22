@@ -1,6 +1,6 @@
 {
   "name": "blogapp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "engines": {
     "node": "20.11.1"
   },
@@ -11,8 +11,7 @@
     "dev": "nodemon index.js",
     "build": "echo 'No build step required'",
     "migrate": "npx sequelize-cli db:migrate",
-    "seed": "cross-env SEED_DATABASE=true node deploy-startup.js",
-    "healthcheck": "node -e \"require('http').get('http://localhost:8080/health', (r) => process.exit(r.statusCode === 200 ? 0 : 1))\""
+    "seed": "cross-env SEED_DATABASE=true node deploy-startup.js"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
