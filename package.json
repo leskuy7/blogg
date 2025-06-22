@@ -7,7 +7,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node deploy-startup.js",
+    "start": "node index.js",
     "dev": "nodemon index.js",
     "build": "echo 'No build step required'",
     "migrate": "npx sequelize-cli db:migrate",

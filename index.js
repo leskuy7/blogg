@@ -24,7 +24,7 @@ app.get('/health', (req, res) => {
 
 // Root endpoint
 app.get('/', (req, res) => {
-  res.send('App is running!');
+  res.redirect('/blogs');
 });
 
 // Health check with database verification
