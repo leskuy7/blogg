@@ -8,7 +8,6 @@ const sequelizeStore = require('connect-session-sequelize')(session.Store);
 const csurf = require('csurf');
 const cookieParser = require('cookie-parser');
 const { logger } = require('./helpers/logger');
-const config = require('./config');
 const { sequelize } = require('./models');
 
 app.set('view engine', 'ejs');
