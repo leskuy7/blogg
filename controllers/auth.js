@@ -39,7 +39,8 @@ exports.post_register = async function (req, res) {
             title: 'Register',
             activePage: 'register',
             message: { class: 'danger', text: 'Şifreler eşleşmiyor!' },
-            formData: req.body
+            formData: req.body,
+            csrfToken: req.csrfToken()
         });
     }
 
@@ -55,7 +56,8 @@ exports.post_register = async function (req, res) {
                 title: 'Register',
                 activePage: 'register',
                 message: { class: 'danger', text: 'Bu e-posta adresi zaten kayıtlı!' },
-                formData: req.body
+                formData: req.body,
+                csrfToken: req.csrfToken()
             });
         }
 
@@ -63,7 +65,7 @@ exports.post_register = async function (req, res) {
         
         // Email doğrulama token'ı oluştur
         const emailVerificationToken = crypto.randomBytes(32).toString('hex');
-          const newUser = await User.create({
+        const newUser = await User.create({
             fullname,
             email,
             password: hashedPassword,
@@ -72,6 +74,9 @@ exports.post_register = async function (req, res) {
             emailVerificationToken: emailVerificationToken,
             emailVerificationExpires: Date.now() + 24 * 60 * 60 * 1000 // 24 saat
         });
+
+        // DB'ye yazıldığını doğrulamak için logla
+        logger.info('New user created', { user: newUser.toJSON ? newUser.toJSON() : newUser });
 
         logAuth('info', 'User registered successfully', { 
             userId: newUser.userId,
@@ -86,47 +91,18 @@ exports.post_register = async function (req, res) {
             registrationDate: new Date().toISOString()
         });
 
-        // Email doğrulama e-postası gönder
-        const emailService = require('../helpers/send-mail');
-        emailService.sendMail(
-            {
-                from: config.auth.user,
-                to: newUser.email,
-                subject: "Email Adresinizi Doğrulayın",
-                html: `
-                    <div style="text-align: center; padding: 20px; font-family: Arial, sans-serif;">
-                        <h1 style="color: #333;">Merhaba ${fullname}</h1>
-                        <p style="font-size: 16px; color: #666;">Blog uygulamamıza kayıt olduğunuz için teşekkür ederiz!</p>
-                        <p style="font-size: 16px; color: #666;">Hesabınızı aktifleştirmek için aşağıdaki butona tıklayın:</p>
-                        <div style="margin: 30px 0;">
-                            <a href="http://localhost:3000/auth/verify-email/${emailVerificationToken}" 
-                               style="background-color: #007bff; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; font-size: 16px;">
-                                Email Adresimi Doğrula
-                            </a>
-                        </div>
-                        <p style="font-size: 14px; color: #999;">Bu bağlantı 24 saat boyunca geçerlidir.</p>
-                        <p style="font-size: 14px; color: #999;">Eğer bu e-postayı siz talep etmediyseniz, lütfen görmezden gelin.</p>
-                    </div>
-                `,
-            },
-            (err, info) => {
-                if (err) {
-                    logger.error("Email sending failed during registration", { 
-                        error: err.message,
-                        userId: newUser.userId,
-                        email: newUser.email
-                    });
-                } else {
-                    logAuth('info', 'Verification email sent successfully', {
-                        userId: newUser.userId,
-                        email: newUser.email,
-                        previewUrl: nodemailer.getTestMessageUrl(info)
-                    });
-                }
-            }
-        );
+        // --- DEĞİŞTİRME: SMTP ile gönderim yerine doğrulama linkini konsola yazdır ---
+        try {
+            const verificationLink = `http://localhost:${process.env.PORT || 3001}/auth/verify-email/${emailVerificationToken}`;
+            // Konsola ve loglara yazdır (çevrimdışı geliştirme için)
+            console.log('Email verification link (development):', verificationLink);
+            logger.info('Email verification link (development)', { link: verificationLink, userId: newUser.userId, email: newUser.email });
+        } catch (err) {
+            logger.error('Failed to output verification link to console', { error: err.message, stack: err.stack, userId: newUser.userId });
+        }
+        // --- /DEĞİŞTİRME ---
 
-        req.flash('success', 'Kayıt başarılı! Lütfen email adresinizi kontrol edin ve doğrulama linkine tıklayın.');
+        req.flash('success', 'Kayıt başarılı! Doğrulama linki konsola yazdırıldı (geliştirme).');
         res.redirect('/auth/login');
     } catch (err) {
         logger.error('Registration error', { 
@@ -226,7 +202,7 @@ exports.get_reset = async function (req, res) {
 exports.post_reset = async function (req, res) {
     const { email } = req.body;
     try {
-        const emailService = require('../helpers/send-mail');
+        const transporter2 = require('../helpers/send-mail');
         const token = crypto.randomBytes(32).toString('hex');
         const user = await User.findOne({ where: { email } });
 
@@ -239,16 +215,16 @@ exports.post_reset = async function (req, res) {
         user.resetTokenExpiration = Date.now() + 3600000; // 1 saat geçerli
         await user.save();
 
-        emailService.sendMail(
+        transporter2.sendMail(
             {
-                from: config.auth.user,
+                from: (config.email && config.email.from) || process.env.EMAIL_FROM || 'no-reply@example.com',
                 to: email,
                 subject: "Şifre Sıfırlama",
                 html: `
                     <div style="text-align: center">
                         <h1>Merhaba ${user.fullname}</h1>
                         <p>Şifrenizi sıfırlamak için aşağıdaki bağlantıya tıklayın:</p>
-                        <a href="http://localhost:3000/auth/password-new/${token}">Şifre Sıfırla</a>
+                        <a href="http://localhost:${process.env.PORT || 3001}/auth/password-new/${token}">Şifre Sıfırla</a>
                         <p>Bu bağlantı 1 saat boyunca geçerlidir.</p>
                     </div>
                 `,
@@ -414,18 +390,25 @@ exports.verifyEmail = async function (req, res) {
         });
 
         if (!user) {
+            logger.warn('Email verification failed - invalid or expired token', { token, ip: req.ip });
             req.flash('error', 'Geçersiz veya süresi dolmuş doğrulama bağlantısı!');
             return res.redirect('/auth/login');
-        }        // Email'i doğrulanmış olarak işaretle
+        }
+
+        // Email'i doğrulanmış olarak işaretle
         user.isEmailVerified = true;
         user.emailVerificationToken = null;
         user.emailVerificationExpires = null;
         await user.save();
 
+        logger.info('Email verified successfully', { userId: user.userId, email: user.email });
+        console.log('Email doğrulandı:', user.email);
+
         req.flash('success', 'Email adresiniz başarıyla doğrulandı! Şimdi giriş yapabilirsiniz.');
         res.redirect('/auth/login');
     } catch (err) {
-        console.error(err);
+        logger.error('Email verification error', { error: err.message, stack: err.stack, token });
+        console.error('Email doğrulama hatası:', err);
         req.flash('error', 'Email doğrulama sırasında bir hata oluştu.');
         res.redirect('/auth/login');
     }
@@ -442,7 +425,7 @@ exports.resendVerification = async function (req, res) {
             req.flash('error', 'Bu email adresi kayıtlı değil!');
             return res.redirect('/auth/resend-verification');
         }
-          if (user.isEmailVerified) {
+        if (user.isEmailVerified) {
             req.flash('info', 'Bu email adresi zaten doğrulanmış!');
             return res.redirect('/auth/login');
         }
@@ -452,42 +435,23 @@ exports.resendVerification = async function (req, res) {
         user.emailVerificationToken = emailVerificationToken;
         user.emailVerificationExpires = Date.now() + 24 * 60 * 60 * 1000; // 24 saat
         await user.save();
-        
-        // Email gönder
-        const emailService = require('../helpers/send-mail');
-        emailService.sendMail(
-            {
-                from: config.auth.user,
-                to: user.email,
-                subject: "Email Adresinizi Doğrulayın",
-                html: `
-                    <div style="text-align: center; padding: 20px; font-family: Arial, sans-serif;">
-                        <h1 style="color: #333;">Merhaba ${user.fullname}</h1>
-                        <p style="font-size: 16px; color: #666;">Email doğrulama bağlantınızı yeniden gönderiyoruz.</p>
-                        <div style="margin: 30px 0;">
-                            <a href="http://localhost:3000/auth/verify-email/${emailVerificationToken}" 
-                               style="background-color: #007bff; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; font-size: 16px;">
-                                Email Adresimi Doğrula
-                            </a>
-                        </div>
-                        <p style="font-size: 14px; color: #999;">Bu bağlantı 24 saat boyunca geçerlidir.</p>
-                    </div>
-                `,
-            },
-            (err, info) => {
-                if (err) {
-                    console.error("E-posta gönderim hatası:", err);
-                    req.flash('error', 'Email gönderilirken bir hata oluştu.');
-                    return res.redirect('/auth/resend-verification');
-                } else {
-                    console.log("E-posta gönderildi, önizleme URL'si:", nodemailer.getTestMessageUrl(info));
-                    req.flash('success', 'Doğrulama emaili tekrar gönderildi! Email kutunuzu kontrol edin.');
-                    return res.redirect('/auth/login');
-                }
-            }
-        );
+
+        logger.info('Resending verification token updated', { userId: user.userId, email: user.email });
+
+        // --- DEĞİŞTİRME: SMTP göndermeyi kaldır, linki konsola yazdır ---
+        try {
+            const verificationLink = `http://localhost:${process.env.PORT || 3001}/auth/verify-email/${emailVerificationToken}`;
+            console.log('Resent verification link (development):', verificationLink);
+            logger.info('Resent verification link (development)', { link: verificationLink, userId: user.userId, email: user.email });
+        } catch (err) {
+            logger.error('Failed to output resent verification link to console', { error: err.message, stack: err.stack, userId: user.userId });
+        }
+        // --- /DEĞİŞTİRME ---
+
+        req.flash('success', 'Doğrulama linki konsola yazdırıldı (geliştirme).');
+        return res.redirect('/auth/login');
     } catch (err) {
-        console.error(err);
+        logger.error('Resend verification error', { error: err.message, stack: err.stack });
         req.flash('error', 'Bir hata oluştu.');
         res.redirect('/auth/resend-verification');
     }

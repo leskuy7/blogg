@@ -1,14 +1,14 @@
 const nodemailer = require('nodemailer');
 const config = require('../config');
 
-// Ethereal SMTP yapılandırması
+// SMTP configuration (Ethereal by default for dev)
 const transporter = nodemailer.createTransport({
-    host: 'smtp.ethereal.email',
-    port: 587,
-    secure: false, // TLS kullanımı için false
+    host: process.env.SMTP_HOST || 'smtp.ethereal.email',
+    port: parseInt(process.env.SMTP_PORT || '587', 10),
+    secure: false,
     auth: {
-        user: config.auth.user, // Ethereal kullanıcı adı
-        pass: config.auth.pass  // Ethereal şifre
+        user: (config.email && config.email.user) || process.env.EMAIL_USER || '',
+        pass: (config.email && config.email.password) || process.env.EMAIL_PASSWORD || ''
     }
 });
 

@@ -24,9 +24,9 @@ const consoleFormat = winston.format.combine(
     })
 );
 
-// Ana logger - sadece error ve combined için
+// Ana logger - sadece error için
 const logger = winston.createLogger({
-    level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+    level: 'error',
     format: logFormat,
     defaultMeta: { service: 'blogapp' },
     transports: [
@@ -108,7 +108,7 @@ const databaseLogger = winston.createLogger({
 });
 
 // Development ortamında console'a da yazdır
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.ENABLE_CONSOLE_LOG !== 'false') {
     logger.add(new winston.transports.Console({
         format: consoleFormat
     }));

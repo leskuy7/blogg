@@ -3,37 +3,25 @@
 const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
-const process = require('process');
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
-const config = require('../config').db[env];
-const { logDatabase } = require('../helpers/logger');
-const db = {};
+const config = require('../config');
 
 let sequelize;
-if (env === 'production' && process.env.MYSQL_URL) {
-  sequelize = new Sequelize(process.env.MYSQL_URL, config);
+if (process.env.USE_MYSQL === 'true') {
+    // MySQL kullan (config içindeki ayarları kullan)
+    const dbConfig = config.db[env] || config.db.development;
+    sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, dbConfig);
 } else {
-  sequelize = new Sequelize(config.database, config.username, config.password, config);
+    // Çevrimdışı kullanım için SQLite varsayılan
+    sequelize = new Sequelize({
+        dialect: 'sqlite',
+        storage: path.join(__dirname, '..', 'database.sqlite'),
+        logging: false
+    });
 }
 
-// Veritabanı bağlantı logları
-sequelize.authenticate()
-  .then(() => {
-    logDatabase('info', 'Database connection established successfully', {
-      database: config.database,
-      host: config.host,
-      dialect: config.dialect,
-      environment: env
-    });
-    console.log('Database connection established successfully');
-  })
-  .catch(err => {
-    logDatabase('error', 'Unable to connect to the database', {
-      error: err.message
-    });
-    console.error('Unable to connect to the database:', err.message);
-  });
+const db = {};
 
 fs
   .readdirSync(__dirname)
@@ -41,12 +29,12 @@ fs
     return (
       file.indexOf('.') !== 0 &&
       file !== basename &&
-      file.slice(-3) === '.js' &&
-      file.indexOf('.test.js') === -1
+      file.slice(-3) === '.js'
     );
   })
   .forEach(file => {
-    const model = require(path.join(__dirname, file))(sequelize);
+    // modelleriniz module.exports = (sequelize, DataTypes) => { ... } veya (sequelize) => { ... } biçiminde olabilir
+    const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
     db[model.name] = model;
   });
 

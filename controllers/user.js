@@ -23,7 +23,8 @@ exports.getHome = async (req, res) => {
             categories: categories,
             selectedCategory: null,
             activePage: 'home',
-            isAuth: req.session.isAuth // Session kullanıldı
+            isAuth: req.session.isAuth, // Session kullanıldı
+            stripTags: striptags
         });
     } catch (err) {
         logger.error("Ana sayfa yükleme hatası:", { 
@@ -177,6 +178,7 @@ exports.getBlogsByCategoryWithPagination = async (req, res) => {
             currentPage: currentPage,
             selectedCategory: category.categoryId,
             activePage: 'blogs',            isAuth: req.session.isAuth // Session kullanıldı
+            , stripTags: striptags
         });
     } catch (err) {
         logger.error("Kategori blogları yükleme hatası:", { 
